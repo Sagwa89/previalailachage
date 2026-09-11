@@ -9,6 +9,7 @@
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%23540b0e'/%3E%3Cpath d='M19 13v38h27v-8H28V13z' fill='%23c9a24b'/%3E%3C/svg%3E">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preload" as="image" href="lailachage.webp" type="image/webp" fetchpriority="high">
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Playfair+Display:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
   <style>
     :root {
@@ -49,6 +50,7 @@
       position: fixed; inset: 0 auto auto 0; height: 3px; width: 0;
       background: var(--gold); z-index: 99;
     }
+    main > section:not(.hero) { content-visibility: auto; contain-intrinsic-size: auto 900px; }
 
     .site-header {
       position: absolute; z-index: 20; inset: 0 0 auto;
@@ -162,10 +164,10 @@
 
     .manifesto {
       position: relative; padding: clamp(5rem, 9vw, 8rem) max(1.5rem, calc((100vw - 1000px)/2));
-      background: linear-gradient(90deg, rgba(38,23,16,.82), rgba(84,11,14,.76)), url('fundo1.webp') center 46% / cover no-repeat, var(--crimson);
-      color: var(--white); text-align: center; overflow: hidden;
+      background: var(--crimson); color: var(--white); text-align: center; overflow: hidden; isolation: isolate;
     }
     .manifesto::before { content: "“"; position: absolute; left: 3vw; top: -2rem; color: rgba(255,255,255,.08); font-family: var(--display); font-size: 23rem; line-height: 1; }
+    .manifesto::after { content: ""; position: absolute; inset: 0; z-index: -1; background: linear-gradient(90deg, rgba(38,23,16,.82), rgba(84,11,14,.76)); }
     .manifesto blockquote { margin: 0; position: relative; font-family: var(--display); font-size: clamp(2.3rem, 5vw, 4.9rem); line-height: 1.07; }
     .manifesto cite { display: block; margin-top: 2rem; color: #e4c982; font-family: var(--sans); font-size: .75rem; font-style: normal; letter-spacing: .2em; text-transform: uppercase; }
 
@@ -218,7 +220,8 @@
     .cause-card p { margin: 0; color: var(--muted); font-size: .88rem; line-height: 1.6; }
 
     .contact { position: relative; isolation: isolate; background: var(--coffee); color: var(--white); text-align: center; border-top: 1px solid rgba(255,255,255,.2); overflow: hidden; }
-    .contact::before { content: ""; position: absolute; inset: 0; z-index: -1; background: linear-gradient(90deg, rgba(38,23,16,.86), rgba(84,11,14,.77)), url('fundo1.webp') center / cover no-repeat; }
+    .contact::before { content: ""; position: absolute; inset: 0; z-index: -1; background: linear-gradient(90deg, rgba(38,23,16,.86), rgba(84,11,14,.77)); }
+    .cinematic-video { position: absolute; inset: 0; z-index: -2; width: 100%; height: 100%; object-fit: cover; pointer-events: none; }
     .contact .section-kicker { color: var(--gold); }
     .contact h2 { max-width: 980px; margin: 0 auto 1.3rem; font-family: var(--display); font-size: clamp(3rem, 6.5vw, 6.5rem); font-weight: 400; line-height: .92; letter-spacing: -.055em; }
     .contact h2 em { color: var(--gold); font-weight: 400; }
@@ -274,6 +277,7 @@
       html { scroll-behavior: auto; }
       *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
       [data-reveal] { opacity: 1; transform: none; }
+      .cinematic-video { display: none; }
     }
   </style>
 </head>
@@ -305,7 +309,7 @@
         </div>
       </div>
       <div class="hero-portrait">
-        <img src="lailachage.webp" alt="Retrato de Laila Hage">
+        <img src="lailachage.webp" alt="Retrato de Laila Hage" loading="eager" decoding="async" fetchpriority="high">
         <span class="hero-index">Laila Hage | Salvador, Bahia</span>
       </div>
     </section>
@@ -317,7 +321,7 @@
       </div>
       <div class="story-grid">
         <div class="story-photo" data-reveal>
-          <img src="lailachage2.webp" alt="Laila Hage durante uma apresentação">
+          <img src="lailachage2.webp" alt="Laila Hage durante uma apresentação" loading="lazy" decoding="async">
         </div>
         <div data-reveal data-reveal-delay="1">
           <div class="story-intro">
@@ -386,6 +390,9 @@
     </section>
 
     <section class="manifesto" aria-label="Manifesto" data-reveal>
+      <video class="cinematic-video" muted loop playsinline preload="none" aria-hidden="true">
+        <source data-src="fundo1.webm" type="video/webm">
+      </video>
       <blockquote>“Sobreviver foi o começo. Encontrar a minha voz foi o caminho. Usar essa voz por outras mulheres é o propósito.”</blockquote>
       <cite>Manifesto | Laila Hage</cite>
     </section>
@@ -394,7 +401,7 @@
       <div class="book-grid">
         <div class="book-stage" data-reveal>
           <div class="book-cover">
-            <img src="lumen.webp" alt="Capa do livro Lumen">
+            <img src="lumen.webp" alt="Capa do livro Lumen" loading="lazy" decoding="async">
           </div>
         </div>
         <div class="book-copy" data-reveal data-reveal-delay="1">
@@ -453,6 +460,9 @@
     </section>
 
     <section class="section contact" id="contato">
+      <video class="cinematic-video" muted loop playsinline preload="none" aria-hidden="true">
+        <source data-src="fundo1.webm" type="video/webm">
+      </video>
       <p class="section-kicker">Continue perto</p>
       <h2 data-reveal>A luz cresce quando é <em>compartilhada.</em></h2>
       <p data-reveal>Acompanhe novos relatos, reflexões e conversas. Se esta história tocou você, envie uma mensagem.</p>
@@ -499,6 +509,29 @@
       });
     }, { threshold: .12 });
     document.querySelectorAll('[data-reveal]').forEach((element) => observer.observe(element));
+
+    const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (!reducedMotion) {
+      const videoObserver = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          const video = entry.target;
+          if (entry.isIntersecting) {
+            if (!video.dataset.loaded) {
+              video.querySelectorAll('source[data-src]').forEach((source) => {
+                source.src = source.dataset.src;
+                source.removeAttribute('data-src');
+              });
+              video.dataset.loaded = 'true';
+              video.load();
+            }
+            video.play().catch(() => {});
+          } else if (!video.paused) {
+            video.pause();
+          }
+        });
+      }, { threshold: .01 });
+      document.querySelectorAll('.cinematic-video').forEach((video) => videoObserver.observe(video));
+    }
 
     document.getElementById('year').textContent = new Date().getFullYear();
   </script>
