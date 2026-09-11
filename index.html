@@ -191,13 +191,11 @@
     .media-section .section-title { color: var(--white); }
     .media-section .section-title em { color: var(--gold); }
     .podcast-grid { display: grid; grid-template-columns: 1fr; gap: 1.25rem; }
-    .podcast-card { overflow: hidden; background: var(--white); border: 1px solid var(--line); }
-    .podcast-card iframe { display: block; width: 100%; border: 0; }
-    .podcast-card.video iframe { aspect-ratio: 16 / 9; height: auto; }
-    .podcast-card.audio iframe { height: 232px; }
-    .podcast-meta { padding: 1.25rem; }
-    .podcast-meta small { color: var(--crimson); letter-spacing: .16em; text-transform: uppercase; }
-    .podcast-meta h3 { margin: .65rem 0 0; font-family: var(--display); font-size: 1.65rem; font-weight: 400; line-height: 1.1; }
+    .podcast-card { height: 100%; overflow: hidden; display: flex; flex-direction: column; background: var(--white); color: var(--wine); border: 1px solid var(--line); }
+    .podcast-card iframe { display: block; width: 100%; height: auto; aspect-ratio: 16 / 9; flex: 0 0 auto; border: 0; }
+    .podcast-meta { flex: 1; padding: 1.25rem; }
+    .podcast-meta small { color: var(--wine); letter-spacing: .16em; text-transform: uppercase; }
+    .podcast-meta h3 { margin: .65rem 0 0; color: var(--wine); font-family: var(--display); font-size: 1.65rem; font-weight: 400; line-height: 1.1; }
 
     .causes { background: var(--linen); padding-top: 4.8rem; padding-bottom: 4.8rem; }
     .causes .section-head { margin-bottom: 2.2rem; }
@@ -237,10 +235,6 @@
     .social-link:hover { background: var(--white); color: var(--wine); }
     .instagram-icon { width: 1.35rem; height: 1.35rem; flex: 0 0 auto; }
 
-    footer { padding: 2.1rem max(1.5rem, calc((100vw - 1180px)/2)); background: var(--wine); color: rgba(255,255,255,.62); }
-    .footer-row { display: flex; align-items: flex-start; flex-direction: column; justify-content: space-between; gap: 1.5rem; font-size: .76rem; }
-    .footer-row a { color: var(--gold); text-underline-offset: .3rem; }
-
     [data-reveal] { opacity: 0; transform: translateY(28px); transition: opacity .75s ease, transform .75s ease; }
     [data-reveal].visible { opacity: 1; transform: none; }
     [data-reveal-delay="1"] { transition-delay: .1s; }
@@ -249,8 +243,7 @@
     @media (min-width: 561px) {
       .book-stage { min-height: 520px; }
       .podcast-grid { grid-template-columns: repeat(2, 1fr); }
-      .podcast-card.audio { grid-column: 1 / -1; }
-      .footer-row { align-items: center; flex-direction: row; }
+      .podcast-card.audio { grid-column: auto; }
     }
     @media (min-width: 901px) {
       .site-header { left: 52.5%; right: 0; width: 47.5%; padding: 0 clamp(1rem, 2.4vw, 2.5rem); }
@@ -504,13 +497,6 @@
     </section>
   </main>
 
-  <footer>
-    <div class="footer-row">
-      <span>© <span id="year"></span> Laila Hage. Todos os direitos reservados.</span>
-      <a href="https://drive.google.com/file/d/1lQeiBxvui0KhFPAOCDODbP3qjiBXdksk/view" target="_blank" rel="noreferrer">Lumen | download gratuito ↑</a>
-    </div>
-  </footer>
-
   <script>
     const menuButton = document.querySelector('.menu-toggle');
     const navigation = document.querySelector('.nav');
@@ -564,7 +550,6 @@
       document.querySelectorAll('.cinematic-video').forEach((video) => videoObserver.observe(video));
     }
 
-    document.getElementById('year').textContent = new Date().getFullYear();
   </script>
 </body>
 </html>
