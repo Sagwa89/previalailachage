@@ -167,7 +167,7 @@
       background: var(--crimson); color: var(--white); text-align: center; overflow: hidden; isolation: isolate;
     }
     .manifesto::before { content: "“"; position: absolute; left: 3vw; top: -2rem; color: rgba(255,255,255,.08); font-family: var(--display); font-size: 23rem; line-height: 1; }
-    .manifesto::after { content: ""; position: absolute; inset: 0; z-index: -1; background: linear-gradient(90deg, rgba(38,23,16,.82), rgba(84,11,14,.76)); }
+    .manifesto::after { content: ""; position: absolute; inset: 0; z-index: -1; background: rgba(38,23,16,.15); }
     .manifesto blockquote { margin: 0; position: relative; font-family: var(--display); font-size: clamp(2.3rem, 5vw, 4.9rem); line-height: 1.07; }
     .manifesto cite { display: block; margin-top: 2rem; color: #e4c982; font-family: var(--sans); font-size: .75rem; font-style: normal; letter-spacing: .2em; text-transform: uppercase; }
 
@@ -185,7 +185,11 @@
     .book-copy .button { margin-top: 1.2rem; }
     .microcopy { display: block; margin-top: 1rem; color: rgba(255,255,255,.48); font-size: .76rem; }
 
-    .media-section { background: #fffaf4; }
+    .media-section { position: relative; isolation: isolate; overflow: hidden; background: var(--coffee); color: var(--white); }
+    .media-section::before { content: ""; position: absolute; inset: 0; z-index: -1; background: rgba(38,23,16,.15); }
+    .media-section .section-kicker { color: var(--gold); }
+    .media-section .section-title { color: var(--white); }
+    .media-section .section-title em { color: var(--gold); }
     .podcast-grid { display: grid; grid-template-columns: 1fr; gap: 1.25rem; }
     .podcast-card { overflow: hidden; background: var(--white); border: 1px solid var(--line); }
     .podcast-card iframe { display: block; width: 100%; border: 0; }
@@ -220,7 +224,6 @@
     .cause-card p { margin: 0; color: var(--muted); font-size: .88rem; line-height: 1.6; }
 
     .contact { position: relative; isolation: isolate; background: var(--coffee); color: var(--white); text-align: center; border-top: 1px solid rgba(255,255,255,.2); overflow: hidden; }
-    .contact::before { content: ""; position: absolute; inset: 0; z-index: -1; background: linear-gradient(90deg, rgba(38,23,16,.86), rgba(84,11,14,.77)); }
     .cinematic-video { position: absolute; inset: 0; z-index: -2; width: 100%; height: 100%; object-fit: cover; pointer-events: none; }
     .contact .section-kicker { color: var(--gold); }
     .contact h2 { max-width: 980px; margin: 0 auto 1.3rem; font-family: var(--display); font-size: clamp(3rem, 6.5vw, 6.5rem); font-weight: 400; line-height: .92; letter-spacing: -.055em; }
@@ -415,6 +418,9 @@
     </section>
 
     <section class="section media-section" id="conversa">
+      <video class="cinematic-video" muted loop playsinline preload="none" aria-hidden="true">
+        <source data-src="fundo1.webm" type="video/webm">
+      </video>
       <div class="section-head" data-reveal>
         <p class="section-kicker">02 · Assista</p>
         <h2 class="section-title">Quando uma história é dita em voz alta, ela deixa de ser <em>silêncio.</em></h2>
@@ -461,7 +467,7 @@
 
     <section class="section contact" id="contato">
       <video class="cinematic-video" muted loop playsinline preload="none" aria-hidden="true">
-        <source data-src="fundo1.webm" type="video/webm">
+        <source data-src="fundo2.webm" type="video/webm">
       </video>
       <p class="section-kicker">Continue perto</p>
       <h2 data-reveal>A luz cresce quando é <em>compartilhada.</em></h2>
