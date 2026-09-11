@@ -210,7 +210,7 @@
     .media-section .section-title em { color: var(--gold); }
     .podcast-grid { display: grid; grid-template-columns: 1fr; gap: 1.25rem; }
     .podcast-card { height: 100%; overflow: hidden; display: flex; flex-direction: column; background: var(--white); color: var(--wine); border: 1px solid var(--line); }
-    .podcast-card iframe { display: block; width: 100%; height: auto; aspect-ratio: 16 / 9; flex: 0 0 auto; border: 0; }
+    .podcast-card iframe { display: block; width: 100%; height: auto; aspect-ratio: 16 / 9; flex: 0 0 auto; border: 0; background: linear-gradient(135deg, var(--wine), var(--coffee)); }
     .podcast-meta { flex: 1; padding: 1.25rem; }
     .podcast-meta small { color: var(--wine); letter-spacing: .16em; text-transform: uppercase; }
     .podcast-meta h3 { margin: .65rem 0 0; color: var(--wine); font-family: var(--display); font-size: 1.65rem; font-weight: 400; line-height: 1.1; }
@@ -243,7 +243,8 @@
 
     .contact { position: relative; isolation: isolate; background: var(--coffee); color: var(--white); text-align: center; border-top: 1px solid rgba(255,255,255,.2); overflow: hidden; }
     .contact::before { content: ""; position: absolute; inset: 0; z-index: -1; background: rgba(38,23,16,.15); }
-    .cinematic-video, .cinematic-image { position: absolute; inset: 0; z-index: -2; width: 100%; height: 100%; object-fit: cover; pointer-events: none; filter: saturate(.85) contrast(1.08) brightness(.92); transform: scale(1.01); }
+    .cinematic-video, .cinematic-image { position: absolute; inset: 0; z-index: -2; width: 100%; height: 100%; object-fit: cover; pointer-events: none; }
+    .cinematic-image { filter: saturate(.85) contrast(1.08) brightness(.92); transform: scale(1.01); }
     .contact .section-kicker { color: var(--gold); }
     .contact h2 { max-width: 980px; margin: 0 auto 1.3rem; font-family: var(--display); font-size: clamp(3rem, 6.5vw, 6.5rem); font-weight: 400; line-height: .92; letter-spacing: -.055em; }
     .contact h2 em { color: var(--gold); font-weight: 400; }
@@ -345,7 +346,7 @@
       </div>
       <div class="story-grid">
         <div class="story-photo" data-reveal>
-          <img src="lailachage2.webp" alt="Laila Hage durante uma apresentação" loading="lazy" decoding="async">
+          <img src="lailachage2site.webp" alt="Laila Hage durante uma apresentação" loading="lazy" decoding="async">
         </div>
         <div data-reveal data-reveal-delay="1">
           <div class="story-intro">
@@ -425,7 +426,7 @@
       <div class="book-grid">
         <div class="book-stage" data-reveal>
           <div class="book-cover">
-            <img src="lumen.webp" alt="Capa do livro Lumen" loading="lazy" decoding="async">
+            <img src="lumensite.webp" alt="Capa do livro Lumen" loading="lazy" decoding="async">
           </div>
         </div>
         <div class="book-copy" data-reveal data-reveal-delay="1">
@@ -446,15 +447,15 @@
       </div>
       <div class="podcast-grid">
         <article class="podcast-card video" data-reveal>
-          <iframe src="https://www.youtube.com/embed/0KYdT4bTwaw" title="Conversa com Laila Hage no YouTube" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+          <iframe data-src="https://www.youtube.com/embed/0KYdT4bTwaw" title="Conversa com Laila Hage no YouTube" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
           <div class="podcast-meta"><small>Conversa 01</small><h3>Uma história que rompe o silêncio</h3></div>
         </article>
         <article class="podcast-card video" data-reveal data-reveal-delay="1">
-          <iframe src="https://www.youtube.com/embed/6BgOGxkgABY" title="Participação de Laila Hage no YouTube" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+          <iframe data-src="https://www.youtube.com/embed/6BgOGxkgABY" title="Participação de Laila Hage no YouTube" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
           <div class="podcast-meta"><small>Conversa 02</small><h3>Fé, justiça e a coragem de continuar</h3></div>
         </article>
         <article class="podcast-card audio" data-reveal data-reveal-delay="2">
-          <iframe src="https://open.spotify.com/embed/episode/0fBZtlt6GBsRmrs6dlOgLV?utm_source=generator" title="Podcast com Laila Hage no Spotify" loading="lazy" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"></iframe>
+          <iframe data-src="https://open.spotify.com/embed/episode/0fBZtlt6GBsRmrs6dlOgLV?utm_source=generator" title="Podcast com Laila Hage no Spotify" loading="lazy" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"></iframe>
           <div class="podcast-meta"><small>Podcast</small><h3>Ouça a conversa completa no Spotify</h3></div>
         </article>
       </div>
@@ -532,7 +533,14 @@
       const limit = document.documentElement.scrollHeight - innerHeight;
       line.style.width = `${limit > 0 ? (scrollY / limit) * 100 : 0}%`;
     }
-    addEventListener('scroll', updateScroll, { passive: true });
+    let scrollFrame = 0;
+    addEventListener('scroll', () => {
+      if (scrollFrame) return;
+      scrollFrame = requestAnimationFrame(() => {
+        updateScroll();
+        scrollFrame = 0;
+      });
+    }, { passive: true });
     updateScroll();
 
     const observer = new IntersectionObserver((entries) => {
@@ -546,7 +554,9 @@
     document.querySelectorAll('[data-reveal]').forEach((element) => observer.observe(element));
 
     const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (!reducedMotion) {
+    const connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+    const reducedData = Boolean(connection && (connection.saveData || connection.effectiveType === 'slow-2g' || connection.effectiveType === '2g'));
+    if (!reducedMotion && !reducedData) {
       const videoObserver = new IntersectionObserver((entries) => {
         entries.forEach((entry) => {
           const video = entry.target;
@@ -567,6 +577,17 @@
       }, { threshold: .01 });
       document.querySelectorAll('.cinematic-video').forEach((video) => videoObserver.observe(video));
     }
+
+    const embedObserver = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        const frame = entry.target;
+        frame.src = frame.dataset.src;
+        frame.removeAttribute('data-src');
+        embedObserver.unobserve(frame);
+      });
+    }, { rootMargin: '220px 0px', threshold: 0 });
+    document.querySelectorAll('iframe[data-src]').forEach((frame) => embedObserver.observe(frame));
 
   </script>
 </body>
