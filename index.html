@@ -113,7 +113,7 @@
       background: linear-gradient(135deg, #b28372, #704131 55%, #2f1c15);
       isolation: isolate; z-index: 0;
     }
-    .hero-portrait img { width: 100%; height: 100%; object-fit: cover; object-position: center 24%; display: block; }
+    .hero-portrait img { width: 100%; height: 100%; object-fit: cover; object-position: center top; display: block; }
     .hero-portrait::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(38,23,16,.06), rgba(38,23,16,.46)); }
     .hero-index {
       position: absolute; left: 1.4rem; bottom: 1.3rem; writing-mode: vertical-rl;
@@ -135,8 +135,8 @@
     }
     .story-photo img { width: 100%; height: 100%; position: absolute; inset: 0; object-fit: cover; object-position: center top; }
     .story-photo::after { content: ""; position: absolute; inset: 1.2rem; border: 1px solid rgba(244,237,228,.55); }
-    .story-intro { padding: clamp(1.6rem, 4vw, 3rem); background: var(--white); border-left: 3px solid var(--gold); }
-    .story-intro > p { font-size: 1.08rem; color: #5f4b40; }
+    .story-intro { padding: clamp(1.8rem, 4vw, 3.2rem); background: var(--white); border-top: 3px solid var(--gold); }
+    .story-intro > p { max-width: 690px; font-size: 1.08rem; color: #5f4b40; }
     .story-intro .dropcap::first-letter {
       float: left; margin: .13em .13em 0 0; font-family: var(--display); font-size: 5rem; line-height: .72; color: var(--crimson);
     }
@@ -144,17 +144,20 @@
     .bio-fact { min-width: 0; padding: 1rem .75rem; background: var(--linen); }
     .bio-fact strong { display: block; color: var(--crimson); font-family: var(--display); font-size: 1.55rem; font-weight: 400; line-height: 1; }
     .bio-fact span { display: block; margin-top: .5rem; color: var(--muted); font-size: .72rem; line-height: 1.35; text-transform: uppercase; }
-    .story-chapters { margin-top: 2rem; }
-    .story-chapter { border-top: 1px solid var(--line); }
-    .story-chapter:last-child { border-bottom: 1px solid var(--line); }
-    .story-chapter summary { list-style: none; padding: 1.35rem 3rem 1.35rem 0; position: relative; cursor: pointer; color: var(--coffee); font-family: var(--display); font-size: clamp(1.5rem, 3vw, 2rem); line-height: 1.08; }
-    .story-chapter summary::-webkit-details-marker { display: none; }
-    .story-chapter summary::after { content: "+"; position: absolute; right: .25rem; top: 50%; translate: 0 -50%; color: var(--crimson); font-family: var(--sans); font-size: 1.25rem; }
-    .story-chapter[open] summary::after { content: "×"; }
-    .chapter-body { padding: 0 0 1.75rem; color: #5f4b40; }
-    .chapter-body p { margin-bottom: 1rem; }
-    .chapter-body p:last-child { margin-bottom: 0; }
+    .story-timeline { margin-top: 3rem; position: relative; }
+    .story-timeline::before { content: ""; position: absolute; left: 1.15rem; top: 1rem; bottom: 2rem; width: 1px; background: var(--line); }
+    .story-moment { display: grid; grid-template-columns: 2.35rem 1fr; gap: 1.2rem; position: relative; }
+    .moment-mark { width: 2.35rem; height: 2.35rem; z-index: 1; display: grid; place-items: center; border: 1px solid var(--gold); border-radius: 50%; background: var(--linen); color: var(--crimson); font-size: .72rem; }
+    .moment-content { padding: .1rem 0 3.2rem; }
+    .moment-content h3 { margin-bottom: 1rem; color: var(--coffee); font-family: var(--display); font-size: clamp(1.9rem, 4vw, 3rem); font-weight: 400; line-height: 1.02; }
+    .moment-content p { max-width: 720px; margin-bottom: 1rem; color: #5f4b40; }
+    .moment-content p:last-child { margin-bottom: 0; }
+    .story-moment.sensitive .moment-content { margin-bottom: 3.2rem; padding: clamp(1.5rem, 4vw, 2.6rem); background: var(--wine); border-top: 3px solid var(--gold); }
+    .story-moment.sensitive .moment-content h3 { color: var(--white); }
+    .story-moment.sensitive .moment-content p { color: rgba(255,250,244,.78); }
     .content-note { color: var(--crimson); font-size: .75rem; letter-spacing: .1em; text-transform: uppercase; }
+    .story-moment.sensitive .content-note { color: var(--gold); }
+    .story-closing { margin: 0; padding: clamp(2rem, 5vw, 4rem); background: var(--white); color: var(--wine); font-family: var(--display); font-size: clamp(2rem, 4.5vw, 3.8rem); line-height: 1.06; }
 
     .manifesto {
       position: relative; padding: clamp(5rem, 9vw, 8rem) max(1.5rem, calc((100vw - 1000px)/2));
@@ -226,14 +229,6 @@
     footer { padding: 2.1rem max(1.5rem, calc((100vw - 1180px)/2)); background: var(--wine); color: rgba(255,255,255,.62); }
     .footer-row { display: flex; align-items: flex-start; flex-direction: column; justify-content: space-between; gap: 1.5rem; font-size: .76rem; }
     .footer-row a { color: var(--gold); text-underline-offset: .3rem; }
-
-    .toast {
-      position: fixed; left: 50%; bottom: 1.5rem; z-index: 100; width: min(480px, calc(100% - 2rem));
-      transform: translate(-50%, 130%); padding: 1rem 1.2rem; background: var(--ink); color: var(--white);
-      border-left: 4px solid var(--gold); box-shadow: 0 16px 45px rgba(0,0,0,.28); transition: transform .35s ease;
-      font-size: .9rem;
-    }
-    .toast.show { transform: translate(-50%, 0); }
 
     [data-reveal] { opacity: 0; transform: translateY(28px); transition: opacity .75s ease, transform .75s ease; }
     [data-reveal].visible { opacity: 1; transform: none; }
@@ -315,7 +310,7 @@
     <section class="section" id="historia">
       <div class="section-head" data-reveal>
         <p class="section-kicker">01 · História pessoal</p>
-        <h2 class="section-title">Não sou apenas o que vivi. Sou o que escolhi <em>iluminar.</em></h2>
+        <h2 class="section-title">O que aconteceu comigo não é o fim da minha <em>história.</em></h2>
       </div>
       <div class="story-grid">
         <div class="story-photo" data-reveal>
@@ -331,52 +326,57 @@
               <div class="bio-fact"><strong>TJBA</strong><span>servidora pública</span></div>
             </div>
           </div>
-          <div class="story-chapters">
-            <details class="story-chapter" open>
-              <summary>Conheço a lei. Também conheço o medo.</summary>
-              <div class="chapter-body">
+          <div class="story-timeline">
+            <article class="story-moment">
+              <span class="moment-mark">01</span>
+              <div class="moment-content">
+                <h3>Eu conhecia a lei. Também conheci o medo.</h3>
                 <p>Sei de cor o que a lei manda fazer quando uma mulher foge de um feminicídio.</p>
-                <p>Dois dias depois de descobrir que estava grávida, o pai do meu filho apertou o meu pescoço até o ar acabar, gritando que ia tirar o demônio de dentro de mim.</p>
-                <p class="content-note">Este relato contém descrições de violência</p>
               </div>
-            </details>
-            <details class="story-chapter">
-              <summary>As marcas visíveis e as que ninguém vê</summary>
-              <div class="chapter-body">
-                <p>Depois vieram os socos, os chutes e o celular arremessado que quebrou a minha mão. Os dedos do meu pé foram abertos à força até fraturar, enquanto ele descrevia como iria picar o meu corpo e dar descarga na latrina.</p>
+            </article>
+            <article class="story-moment sensitive">
+              <span class="moment-mark">02</span>
+              <div class="moment-content">
+                <p class="content-note">Este relato contém descrições de violência</p>
+                <h3>Dois dias depois de descobrir a gravidez</h3>
+                <p>O pai do meu filho apertou o meu pescoço até o ar acabar, gritando que ia tirar o demônio de dentro de mim. Depois vieram os socos, os chutes e o celular arremessado que quebrou a minha mão.</p>
+                <p>Os dedos do meu pé foram abertos à força até fraturar, enquanto ele descrevia como iria picar o meu corpo e dar descarga na latrina.</p>
                 <p>Todos os dias havia também o que não deixa marca: violência psicológica extrema, com ataques ao meu corpo e à minha alma. Lixo, depósito de esperma, demônio.</p>
               </div>
-            </details>
-            <details class="story-chapter">
-              <summary>Em julho de 2025, saí viva</summary>
-              <div class="chapter-body">
+            </article>
+            <article class="story-moment">
+              <span class="moment-mark">03</span>
+              <div class="moment-content">
+                <h3>Em julho de 2025, saí viva.</h3>
                 <p>Denunciei. E a violência trocou de roupa: vestiu toga, farda e beca.</p>
                 <p>O inquérito parou. Ele descumpriu a medida protetiva passeando escoltado pelos corredores do tribunal onde trabalho. Me ameaçaram com alienação parental por ter medo de entregar meu filho a ele.</p>
               </div>
-            </details>
-            <details class="story-chapter">
-              <summary>Isso tem nome na lei</summary>
-              <div class="chapter-body">
+            </article>
+            <article class="story-moment">
+              <span class="moment-mark">04</span>
+              <div class="moment-content">
+                <h3>Isso tem nome na lei: violência institucional.</h3>
                 <p>Uma desembargadora decidiu em minutos, sem me ouvir, e meu filho voltou para casa intoxicado. A Ordem dos Advogados entrou no meu processo para pedir que a minha proteção fosse reduzida e que ele não fosse preso por descumprir a medida, mesmo tendo confessado.</p>
                 <p>Chamou a minha segurança de “ganho irrelevante”. Uma instituição inteira, de pé, pelo homem que me estrangulou grávida.</p>
-                <p><strong>Isso tem nome na lei: violência institucional.</strong></p>
               </div>
-            </details>
-            <details class="story-chapter">
-              <summary>Um milhão de pessoas viram</summary>
-              <div class="chapter-body">
-                <p>Gravei um vídeo mostrando aquela petição. Um milhão de pessoas viram. Vieram mensagens de mulheres de todo o país com a minha história e outros nomes. Advogadas, médicas, juízas, mães. Estranguladas em casa e depois estranguladas pelo processo.</p>
+            </article>
+            <article class="story-moment">
+              <span class="moment-mark">05</span>
+              <div class="moment-content">
+                <h3>Um milhão de pessoas viram.</h3>
+                <p>Gravei um vídeo mostrando aquela petição. Vieram mensagens de mulheres de todo o país com a minha história e outros nomes. Advogadas, médicas, juízas, mães. Estranguladas em casa e depois estranguladas pelo processo.</p>
                 <p>Eu não escolhi virar referência. Aconteceu. E quando aconteceu, entendi para que eu tinha sobrevivido.</p>
               </div>
-            </details>
-            <details class="story-chapter">
-              <summary>Por elas, sigo de pé</summary>
-              <div class="chapter-body">
+            </article>
+            <article class="story-moment">
+              <span class="moment-mark">06</span>
+              <div class="moment-content">
+                <h3>A dor encontrou uma missão.</h3>
                 <p>Ainda estou sangrando. Tenho processos abertos, um filho para proteger e noites em que o pescoço lembra. Mas processo a minha dor em público porque ela estanca o sangue de outras.</p>
                 <p>Cada mulher que me escreve dizendo “eu me vi na sua história” é uma a menos calada. E eu bem sei o quanto é solitário e sufocante não poder falar.</p>
-                <p>Deus não quis a minha dor. Mas não deixou que ela fosse à toa. Esta é a minha missão. Por ela, sigo de pé.</p>
               </div>
-            </details>
+            </article>
+            <blockquote class="story-closing">Deus não quis a minha dor. Mas não deixou que ela fosse à toa. Esta é a minha missão. Por ela, sigo de pé.</blockquote>
           </div>
         </div>
       </div>
@@ -455,7 +455,6 @@
       <p data-reveal>Acompanhe novos relatos, reflexões e conversas. Se esta história tocou você, envie uma mensagem.</p>
       <div class="socials" data-reveal>
         <a class="social-link" href="https://www.instagram.com/lailahage/" target="_blank" rel="noreferrer">Instagram · @lailahage</a>
-        <a class="social-link" href="#" data-missing="contact">Enviar mensagem</a>
         <a class="social-link" href="https://drive.google.com/file/d/1lQeiBxvui0KhFPAOCDODbP3qjiBXdksk/view" target="_blank" rel="noreferrer">Baixar Lumen</a>
       </div>
     </section>
@@ -467,8 +466,6 @@
       <a href="https://drive.google.com/file/d/1lQeiBxvui0KhFPAOCDODbP3qjiBXdksk/view" target="_blank" rel="noreferrer">Lumen | download gratuito ↑</a>
     </div>
   </footer>
-
-  <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
   <script>
     const menuButton = document.querySelector('.menu-toggle');
@@ -500,24 +497,6 @@
     }, { threshold: .12 });
     document.querySelectorAll('[data-reveal]').forEach((element) => observer.observe(element));
 
-    const toast = document.getElementById('toast');
-    let toastTimer;
-    function showToast(message) {
-      toast.textContent = message;
-      toast.classList.add('show');
-      clearTimeout(toastTimer);
-      toastTimer = setTimeout(() => toast.classList.remove('show'), 4200);
-    }
-    document.querySelectorAll('[data-missing]').forEach((element) => {
-      element.addEventListener('click', (event) => {
-        event.preventDefault();
-        const type = element.dataset.missing;
-        const messages = {
-          contact: 'Canal de contato pendente. Adicione aqui o WhatsApp ou email oficial.'
-        };
-        showToast(messages[type]);
-      });
-    });
     document.getElementById('year').textContent = new Date().getFullYear();
   </script>
 </body>
