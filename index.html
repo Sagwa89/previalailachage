@@ -206,6 +206,47 @@
     .book-copy .button { margin-top: 1.2rem; }
     .microcopy { display: block; margin-top: 1rem; color: rgba(255,255,255,.48); font-size: .76rem; }
 
+    .new-book { background: var(--wine); color: var(--white); }
+    .new-book .section-kicker, .new-book h2 em, .new-book-closing em { color: var(--gold); }
+    .new-book-head { max-width: 980px; margin-bottom: clamp(3rem, 7vw, 6rem); }
+    .work-title { margin: 1rem 0 .35rem; font-family: var(--display); font-size: clamp(3rem, 8vw, 7rem); font-weight: 400; line-height: .88; letter-spacing: -.05em; text-transform: uppercase; }
+    .work-subtitle { margin: 0; color: var(--gold); font-size: clamp(.9rem, 2vw, 1.15rem); letter-spacing: .16em; text-transform: uppercase; }
+    .new-book-grid { display: grid; grid-template-columns: 1fr; gap: clamp(2rem, 6vw, 5rem); align-items: start; }
+    .new-book-copy h2 { margin-bottom: 2rem; font-family: var(--display); font-size: clamp(2.8rem, 6vw, 5.7rem); font-weight: 400; line-height: .95; letter-spacing: -.04em; }
+    .prologue-excerpt { margin: 0; padding: clamp(1.6rem, 4vw, 3rem); border-left: 3px solid var(--gold); background: rgba(255,255,255,.055); }
+    .prologue-excerpt p { margin-bottom: 1.15rem; color: rgba(255,250,244,.84); font-family: var(--display); font-size: clamp(1.35rem, 3vw, 2.15rem); line-height: 1.35; }
+    .prologue-excerpt p:last-of-type { margin-bottom: 0; }
+    .prologue-excerpt cite { display: block; margin-top: 1.8rem; color: var(--gold); font-family: var(--sans); font-size: .75rem; font-style: normal; letter-spacing: .16em; text-transform: uppercase; }
+    .book-brief { display: grid; grid-template-columns: 1fr; gap: 1px; margin-top: 2rem; background: rgba(255,255,255,.18); }
+    .book-brief article { padding: 1.5rem; background: var(--coffee); }
+    .book-brief h3 { margin-bottom: .8rem; color: var(--gold); font-family: var(--display); font-size: 1.6rem; font-weight: 400; }
+    .book-brief p { margin: 0; color: rgba(255,250,244,.76); }
+    .book-brief p + p { margin-top: 1rem; }
+    .new-book-copy > .button { margin-top: 2rem; }
+    .new-book-closing { margin: 3rem 0 0; font-family: var(--display); font-size: clamp(2rem, 4vw, 3.6rem); line-height: 1.05; }
+    .prologue-panel { padding: clamp(1.6rem, 4vw, 3rem); background: var(--linen); color: var(--coffee); border-top: 5px solid var(--gold); }
+    .prologue-panel h3 { margin: 0 0 1rem; font-family: var(--display); font-size: clamp(2.5rem, 5vw, 4rem); font-weight: 400; line-height: 1; }
+    .prologue-panel > p { color: #5f4b40; }
+    .prologue-form { margin-top: 2rem; }
+    .form-grid { display: grid; grid-template-columns: 1fr; gap: 1rem; }
+    .field label { display: block; margin-bottom: .4rem; color: var(--wine); font-size: .75rem; letter-spacing: .12em; text-transform: uppercase; }
+    .field input { width: 100%; min-height: 3.5rem; padding: .8rem 1rem; border: 1px solid rgba(74,44,31,.28); background: var(--white); color: var(--ink); font: inherit; }
+    .field input:focus { outline: 2px solid var(--gold); outline-offset: 2px; }
+    .consent { display: flex; gap: .7rem; margin: 1.2rem 0; align-items: flex-start; color: #5f4b40; font-size: .82rem; line-height: 1.5; }
+    .consent input { margin-top: .25rem; accent-color: var(--wine); }
+    .prologue-form .button { width: 100%; }
+    .privacy-note, .form-status { display: block; margin-top: .9rem; color: var(--muted); font-size: .76rem; line-height: 1.5; }
+
+    .institute { background: var(--white); }
+    .institute-intro { display: grid; grid-template-columns: 1fr; gap: 2rem; align-items: end; }
+    .institute-intro .section-title { margin-bottom: 0; }
+    .institute-lede { max-width: 650px; margin: 0; color: #5f4b40; font-size: 1.08rem; }
+    .institute-grid { display: grid; grid-template-columns: 1fr; gap: 1px; margin-top: 3.5rem; background: var(--line); }
+    .institute-card { padding: clamp(1.6rem, 4vw, 3rem); background: var(--linen); }
+    .institute-card span { color: var(--crimson); font-size: .75rem; letter-spacing: .16em; text-transform: uppercase; }
+    .institute-card h3 { margin: 1.2rem 0 .8rem; font-family: var(--display); font-size: 2rem; font-weight: 400; }
+    .institute-card p { margin: 0; color: var(--muted); }
+
     .media-section { position: relative; isolation: isolate; overflow: hidden; background: var(--coffee); color: var(--white); }
     .media-section::before { content: ""; position: absolute; inset: 0; z-index: -1; background: rgba(38,23,16,.15); }
     .media-section .section-kicker { color: var(--gold); }
@@ -264,6 +305,8 @@
 
     @media (min-width: 561px) {
       .book-stage { min-height: 520px; }
+      .book-brief, .form-grid { grid-template-columns: repeat(2, 1fr); }
+      .field:first-child { grid-column: 1 / -1; }
       .podcast-grid { grid-template-columns: repeat(2, 1fr); }
       .podcast-card.audio { grid-column: auto; }
     }
@@ -282,6 +325,9 @@
       .story-photo { min-height: 760px; position: sticky; top: 2rem; }
       .book-grid { grid-template-columns: .85fr 1.15fr; }
       .book-stage { min-height: 610px; }
+      .new-book-grid { grid-template-columns: minmax(0, 1.18fr) minmax(340px, .82fr); }
+      .institute-intro { grid-template-columns: 1.05fr .95fr; }
+      .institute-grid { grid-template-columns: repeat(3, 1fr); }
       .podcast-grid { grid-template-columns: repeat(3, 1fr); align-items: start; }
       .podcast-card.audio { grid-column: auto; }
       .cause-grid { grid-template-columns: repeat(3, 1fr); max-width: none; margin-inline: 0; }
@@ -319,8 +365,9 @@
     <nav class="nav" id="navigation" aria-label="Navegação principal">
       <a href="#historia">História</a>
       <a href="#lumen">Lumen</a>
-      <a href="#conversa">Conversa</a>
-      <a href="#causas">Essência</a>
+      <a href="#novo-livro">Novo livro</a>
+      <a href="#instituto">Instituto</a>
+      <a href="blog.html">Blog</a>
       <a class="nav-cta" href="https://drive.google.com/file/d/1lQeiBxvui0KhFPAOCDODbP3qjiBXdksk/view" target="_blank" rel="noreferrer">Baixar o livro</a>
     </nav>
   </header>
@@ -329,7 +376,7 @@
     <section class="hero" id="topo">
       <div class="hero-copy">
         <p class="eyebrow">Uma história de fé e recomeço</p>
-        <h1>A luz que a <em>escuridão</em> não apaga.</h1>
+        <h1>Há luz que a <em>escuridão</em> não apaga.</h1>
         <p class="hero-lede">Mulher. Mãe. Cristã. Servidora pública. Sobrevivente. Uma voz que transforma feridas em caminho e silêncio em coragem.</p>
         <div class="hero-actions">
           <a class="button" href="https://drive.google.com/file/d/1lQeiBxvui0KhFPAOCDODbP3qjiBXdksk/view" target="_blank" rel="noreferrer">Baixar Lumen <span class="arrow" aria-hidden="true">↘</span></a>
@@ -391,7 +438,7 @@
               <span class="moment-mark">04</span>
               <div class="moment-content">
                 <h3>Isso tem nome na lei: violência institucional.</h3>
-                <p> A Ordem dos Advogados entrou no meu processo para pedir que a minha proteção fosse reduzida e que ele não fosse preso por descumprir a medida, mesmo tendo confessado.</p>
+                <p>Uma desembargadora decidiu em minutos, sem me ouvir, e meu filho voltou para casa intoxicado. A Ordem dos Advogados entrou no meu processo para pedir que a minha proteção fosse reduzida e que ele não fosse preso por descumprir a medida, mesmo tendo confessado.</p>
                 <p>Chamou a minha segurança de “ganho irrelevante”. Uma instituição inteira, de pé, pelo homem que me estrangulou grávida.</p>
               </div>
             </article>
@@ -399,7 +446,7 @@
               <span class="moment-mark">05</span>
               <div class="moment-content">
                 <h3>Um milhão de pessoas viram.</h3>
-                <p>Gravei um vídeo questionando aquela petição. Vieram mensagens de mulheres de todo o país com a minha história e outros nomes. Advogadas, médicas, juízas, mães. Estranguladas em casa e depois estranguladas pelo processo.</p>
+                <p>Gravei um vídeo mostrando aquela petição. Vieram mensagens de mulheres de todo o país com a minha história e outros nomes. Advogadas, médicas, juízas, mães. Estranguladas em casa e depois estranguladas pelo processo.</p>
                 <p>Eu não escolhi virar referência. Aconteceu. E quando aconteceu, entendi para que eu tinha sobrevivido.</p>
               </div>
             </article>
@@ -442,10 +489,102 @@
       </div>
     </section>
 
+    <section class="section new-book" id="novo-livro">
+      <div class="new-book-head" data-reveal>
+        <p class="section-kicker">02 · Novo livro em desenvolvimento</p>
+        <p class="work-title">Quando a proteção fere</p>
+        <p class="work-subtitle">O Estado como extensão do agressor · Laila Hage</p>
+      </div>
+      <div class="new-book-grid">
+        <div class="new-book-copy" data-reveal>
+          <p class="free-label">O Tribunal debate a teoria, o papel aceita tudo.</p>
+          <h2>A realidade, no entanto, cobra em <em>sangue.</em></h2>
+          <blockquote class="prologue-excerpt">
+            <p>Atravessei os corredores do Tribunal de Justiça da Bahia com o olho roxo.</p>
+            <p>Tinha tentado de tudo. Camadas grossas de corretivo, um curativo posicionado para esconder o estrago. Mas a marca era nua, impossível de camuflar.</p>
+            <p>E eu, naquele corredor, não era uma vítima qualquer entrando para denunciar: eu era quem escrevia as decisões daquele Tribunal.</p>
+            <p>Sabia tudo sobre aquele sistema, menos como fazer aquele sistema enxergar o roxo no rosto de quem o operava.</p>
+            <cite>Prólogo · A Fortaleza de Papel</cite>
+          </blockquote>
+          <div class="book-brief">
+            <article>
+              <h3>O que este livro é</h3>
+              <p>Um livro técnico de direito, nascido de uma travessia dupla. Defende o microssistema de proteção a mulheres e crianças com exigência técnica, sem uniforme partidário e sem slogan.</p>
+              <p>A tese é direta e, para muitos, insuportável. Em parcela trágica dos casos, as mãos do Estado tornam se a extensão das mãos do agressor.</p>
+            </article>
+            <article>
+              <h3>A escala da obra</h3>
+              <p>Cinco partes. Dezoito capítulos. Um percurso da delegacia às varas de violência doméstica e de família, da perícia ao que precisa mudar na lei e nas instituições.</p>
+            </article>
+          </div>
+          <a class="button" href="#prologo">Ler o Prólogo</a>
+          <small class="microcopy">Prólogo completo e gratuito · deixe email e telefone para receber</small>
+          <p class="new-book-closing">A experiência informa o olhar. O olhar opera com método.<br>Seja bem vindo ao corredor da <em>máquina.</em></p>
+        </div>
+
+        <aside class="prologue-panel" id="prologo" data-reveal data-reveal-delay="1">
+          <p class="section-kicker">Leitura gratuita</p>
+          <h3>Leia o Prólogo</h3>
+          <p>A impossibilidade de nomear casos não é fragilidade deste livro: é a denúncia que ele faz.</p>
+          <p>O prólogo na íntegra, direto no seu email. Você recebe também o aviso do lançamento, em primeira mão.</p>
+          <form class="prologue-form" id="prologueForm" data-endpoint="" novalidate>
+            <div class="form-grid">
+              <div class="field">
+                <label for="readerName">Nome</label>
+                <input id="readerName" name="name" type="text" autocomplete="name" required>
+              </div>
+              <div class="field">
+                <label for="readerEmail">Email</label>
+                <input id="readerEmail" name="email" type="email" autocomplete="email" required>
+              </div>
+              <div class="field">
+                <label for="readerPhone">Telefone com WhatsApp</label>
+                <input id="readerPhone" name="phone" type="tel" autocomplete="tel" inputmode="tel" required>
+              </div>
+            </div>
+            <label class="consent">
+              <input name="consent" type="checkbox" required>
+              <span>Autorizo o envio do prólogo, novidades, publicações, eventos e palestras.</span>
+            </label>
+            <button class="button" type="submit">Quero ler o Prólogo</button>
+            <small class="privacy-note">Seus dados servem só para enviar o prólogo e avisar do lançamento. Nada além disso.</small>
+            <p class="form-status" id="formStatus" role="status" aria-live="polite"></p>
+          </form>
+        </aside>
+      </div>
+    </section>
+
+    <section class="section institute" id="instituto">
+      <div class="institute-intro" data-reveal>
+        <div>
+          <p class="section-kicker">03 · Instituto</p>
+          <h2 class="section-title">Conhecimento que protege. Presença que <em>transforma.</em></h2>
+        </div>
+        <p class="institute-lede">O Instituto Laila Hage nasce para transformar experiência em informação, formação e articulação sobre a proteção de mulheres e crianças, com atenção especial à violência institucional.</p>
+      </div>
+      <div class="institute-grid">
+        <article class="institute-card" data-reveal>
+          <span>01 · Informação</span>
+          <h3>Clareza para reconhecer</h3>
+          <p>Conteúdo acessível para dar nome às violências e tornar os caminhos de proteção mais compreensíveis.</p>
+        </article>
+        <article class="institute-card" data-reveal data-reveal-delay="1">
+          <span>02 · Formação</span>
+          <h3>Método para transformar</h3>
+          <p>Conversas e formação para profissionais, instituições e pessoas comprometidas com uma proteção efetiva.</p>
+        </article>
+        <article class="institute-card" data-reveal data-reveal-delay="2">
+          <span>03 · Articulação</span>
+          <h3>Presença para avançar</h3>
+          <p>Diálogo entre sociedade e instituições para aproximar a promessa da lei da realidade de quem precisa dela.</p>
+        </article>
+      </div>
+    </section>
+
     <section class="section media-section" id="conversa">
       <img class="cinematic-image" src="cortina.webp" alt="" loading="lazy" decoding="async" aria-hidden="true">
       <div class="section-head" data-reveal>
-        <p class="section-kicker">02 · Assista</p>
+        <p class="section-kicker">04 · Assista</p>
         <h2 class="section-title">Quando uma história é dita em voz alta, ela deixa de ser <em>silêncio.</em></h2>
       </div>
       <div class="podcast-grid">
@@ -466,7 +605,7 @@
 
     <section class="section causes" id="causas">
       <div class="section-head" data-reveal>
-        <p class="section-kicker">03 · O que me move</p>
+        <p class="section-kicker">05 · O que me move</p>
         <h2 class="section-title">Três forças que permanecem quando tudo parece <em>incerto.</em></h2>
       </div>
       <div class="cause-grid">
@@ -496,7 +635,7 @@
       <h2 data-reveal>A luz cresce quando é <em>compartilhada.</em></h2>
       <p data-reveal>Acompanhe novos relatos, reflexões e conversas.</p>
       <div class="socials" data-reveal>
-        <a class="social-link" href="https://www.instagram.com/lailachage/" target="_blank" rel="noreferrer">
+        <a class="social-link" href="https://www.instagram.com/lailahage/" target="_blank" rel="noreferrer">
           <svg class="instagram-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
             <defs>
               <linearGradient id="instagramGradient" x1="0" y1="1" x2="1" y2="0">
@@ -512,7 +651,7 @@
             <circle cx="12" cy="12" r="2.8" fill="none" stroke="#fff" stroke-width="1.8"/>
             <circle cx="16.3" cy="7.8" r="1" fill="#fff"/>
           </svg>
-          <span>Instagram · @lailachage</span>
+          <span>Instagram · @lailahage</span>
         </a>
         <a class="social-link" href="https://drive.google.com/file/d/1lQeiBxvui0KhFPAOCDODbP3qjiBXdksk/view" target="_blank" rel="noreferrer">Baixar Lumen</a>
       </div>
@@ -591,6 +730,35 @@
       });
     }, { rootMargin: '220px 0px', threshold: 0 });
     document.querySelectorAll('iframe[data-src]').forEach((frame) => embedObserver.observe(frame));
+
+    const prologueForm = document.getElementById('prologueForm');
+    const formStatus = document.getElementById('formStatus');
+    prologueForm.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      if (!prologueForm.reportValidity()) return;
+      const endpoint = prologueForm.dataset.endpoint;
+      if (!endpoint) {
+        formStatus.textContent = 'O envio automático será ativado assim que o canal seguro de cadastro for conectado.';
+        return;
+      }
+      const button = prologueForm.querySelector('button');
+      button.disabled = true;
+      formStatus.textContent = 'Enviando seu cadastro.';
+      try {
+        const response = await fetch(endpoint, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(Object.fromEntries(new FormData(prologueForm)))
+        });
+        if (!response.ok) throw new Error('Falha no cadastro');
+        prologueForm.reset();
+        formStatus.textContent = 'Cadastro confirmado. Verifique seu email para ler o prólogo.';
+      } catch {
+        formStatus.textContent = 'Não foi possível concluir agora. Tente novamente em alguns instantes.';
+      } finally {
+        button.disabled = false;
+      }
+    });
 
   </script>
 </body>
