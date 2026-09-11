@@ -54,21 +54,22 @@
       position: absolute; z-index: 20; inset: 0 0 auto;
       display: flex; align-items: center; justify-content: space-between;
       width: calc(100% - 2rem); margin: 0 auto; padding: 1.15rem 0;
-      color: var(--white); border-bottom: 1px solid rgba(255,255,255,.18);
+      color: var(--wine); background: rgba(255,250,244,.9); border-bottom: 1px solid rgba(84,11,14,.18);
+      backdrop-filter: blur(10px);
     }
     .brand {
       font-family: var(--display); font-size: 1.35rem; letter-spacing: .12em;
       text-transform: uppercase; text-decoration: none;
     }
-    .brand span { color: var(--gold); }
+    .brand span { color: var(--wine); }
     .nav {
       position: absolute; inset: 100% 0 auto; display: none; flex-direction: column; align-items: stretch; gap: 0;
-      background: var(--wine); padding: 1rem; border: 1px solid rgba(255,255,255,.18);
+      background: rgba(255,250,244,.97); padding: 1rem; border: 1px solid rgba(84,11,14,.18);
     }
     .nav.open { display: flex; }
     .nav a { padding: 1rem; font-size: .8rem; letter-spacing: .12em; text-transform: uppercase; text-decoration: none; }
-    .nav a:hover, .nav a:focus-visible { color: var(--gold); }
-    .nav .nav-cta { border: 1px solid var(--gold); padding: .7rem 1rem; color: var(--gold); }
+    .nav a:hover, .nav a:focus-visible { color: var(--crimson); }
+    .nav .nav-cta { border: 1px solid var(--wine); padding: .7rem 1rem; color: var(--wine); }
     .menu-toggle {
       display: block; border: 0; background: transparent; color: inherit; font: inherit;
       letter-spacing: .1em; text-transform: uppercase; cursor: pointer;
@@ -242,14 +243,7 @@
       .footer-row { align-items: center; flex-direction: row; }
     }
     @media (min-width: 901px) {
-      .site-header { width: min(1180px, calc(100% - 3rem)); padding: 1.5rem 0; }
-      .menu-toggle { display: none; }
-      .nav {
-        position: static; display: flex; flex-direction: row; align-items: center; gap: 1.7rem;
-        background: transparent; padding: 0; border: 0;
-      }
-      .nav a { padding: 0; }
-      .nav .nav-cta { padding: .7rem 1rem; }
+      .site-header { left: 52.5%; right: 0; width: 47.5%; padding: 1.15rem clamp(1rem, 2.4vw, 2.5rem); }
       .hero { height: 100svh; min-height: 620px; grid-template-columns: minmax(0, 1.05fr) minmax(380px, .95fr); }
       .hero-copy {
         min-height: 0;
@@ -266,6 +260,15 @@
       .podcast-grid { grid-template-columns: repeat(3, 1fr); align-items: start; }
       .podcast-card.audio { grid-column: auto; }
       .cause-grid { grid-template-columns: repeat(3, 1fr); max-width: none; margin-inline: 0; }
+    }
+    @media (min-width: 1200px) {
+      .menu-toggle { display: none; }
+      .nav {
+        position: static; display: flex; flex-direction: row; align-items: center; gap: .8rem;
+        background: transparent; padding: 0; border: 0;
+      }
+      .nav a { padding: 0; font-size: .68rem; }
+      .nav .nav-cta { padding: .6rem .72rem; }
     }
     @media (prefers-reduced-motion: reduce) {
       html { scroll-behavior: auto; }
