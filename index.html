@@ -375,13 +375,14 @@
       .cause-card blockquote { margin: 4.5rem 0 1rem; font-size: clamp(2rem, 3vw, 3.05rem); line-height: .96; }
       .cause-card p { font-size: .88rem; line-height: 1.6; }
     }
-    @media (min-width: 1200px) {
+    @media (min-width: 1500px) {
       .menu-toggle { display: none; }
       .nav {
-        position: static; display: flex; flex-direction: row; align-items: center; gap: .8rem;
-        width: auto; background: transparent; padding: 0; border: 0;
+        position: static; display: flex; flex-direction: row; align-items: center; justify-content: flex-end;
+        gap: clamp(.5rem, .7vw, .85rem); width: 100%; min-width: 0;
+        background: transparent; padding: 0; border: 0;
       }
-      .nav a { padding: 0; font-size: .68rem; }
+      .nav a { flex: 0 0 auto; padding: 0; white-space: nowrap; font-size: clamp(.62rem, .55vw, .7rem); letter-spacing: .08em; }
       .nav .nav-cta { padding: .6rem .72rem; }
     }
     @media (prefers-reduced-motion: reduce) {
@@ -403,7 +404,7 @@
       <a href="#lumen">Lumen</a>
       <a href="#novo-livro">Novo livro</a>
       <a href="#instituto">Instituto</a>
-      <a href="#blog">Blog</a>
+      <a href="blog/">Blog</a>
       <a class="nav-cta" href="https://drive.google.com/file/d/1lQeiBxvui0KhFPAOCDODbP3qjiBXdksk/view" target="_blank" rel="noreferrer">Baixar o livro</a>
     </nav>
   </header>
