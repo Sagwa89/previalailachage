@@ -99,6 +99,34 @@
     .read-link::after { content: "→"; color: var(--gold); font-size: 1.15rem; transition: transform .2s ease; }
     .read-link:hover::after { transform: translateX(4px); }
     .comment-link { color: var(--muted); text-decoration: underline; text-underline-offset: .25rem; }
+    .reader { display: none; padding: clamp(2.5rem, 7vw, 6rem) max(1.2rem, calc((100vw - 940px) / 2)); }
+    .reader.is-visible { display: block; }
+    .reader-back { display: inline-flex; align-items: center; gap: .65rem; margin-bottom: clamp(2rem, 5vw, 4rem); color: var(--wine); font-size: .72rem; font-weight: 700; letter-spacing: .12em; text-decoration: none; text-transform: uppercase; }
+    .reader-back span { color: var(--gold); font-size: 1.1rem; transition: transform .2s ease; }
+    .reader-back:hover span { transform: translateX(-4px); }
+    .article-shell { background: var(--paper); border-top: 4px solid var(--gold); box-shadow: 0 28px 70px rgba(74, 44, 31, .1); }
+    .article-head { padding: clamp(2rem, 6vw, 5rem) clamp(1.25rem, 7vw, 5.5rem) clamp(1.8rem, 5vw, 3.5rem); }
+    .article-kicker { margin: 0 0 1.1rem; color: var(--crimson); font-size: .72rem; letter-spacing: .16em; text-transform: uppercase; }
+    .article-title { max-width: 780px; margin: 0; color: var(--wine); font-family: var(--display); font-size: clamp(2.8rem, 10vw, 6.4rem); font-weight: 400; letter-spacing: -.04em; line-height: .94; }
+    .article-date { display: block; margin-top: 1.5rem; color: var(--muted); font-size: .75rem; letter-spacing: .1em; text-transform: uppercase; }
+    .article-cover { width: 100%; max-height: 680px; object-fit: cover; object-position: center; filter: saturate(.78) contrast(1.07) brightness(.92); }
+    .article-content { padding: clamp(2rem, 6vw, 5rem) clamp(1.25rem, 7vw, 5.5rem); color: #3a2921; font-family: var(--display); font-size: clamp(1.12rem, 2vw, 1.3rem); line-height: 1.85; }
+    .article-content > :first-child { margin-top: 0; }
+    .article-content > :last-child { margin-bottom: 0; }
+    .article-content h1, .article-content h2, .article-content h3 { margin: 2.4em 0 .75em; color: var(--wine); font-family: var(--display); font-weight: 400; letter-spacing: -.025em; line-height: 1.08; }
+    .article-content h1 { font-size: clamp(2.3rem, 7vw, 4.5rem); }
+    .article-content h2 { font-size: clamp(2rem, 6vw, 3.5rem); }
+    .article-content h3 { font-size: clamp(1.6rem, 5vw, 2.5rem); }
+    .article-content p, .article-content ul, .article-content ol, .article-content blockquote { margin: 0 0 1.55em; }
+    .article-content a { color: var(--crimson); text-decoration-thickness: 1px; text-underline-offset: .2em; }
+    .article-content img { width: auto; max-width: 100%; height: auto; margin: 2.25rem auto; }
+    .article-content blockquote { margin-left: 0; padding: .5rem 0 .5rem clamp(1.2rem, 4vw, 2rem); border-left: 3px solid var(--gold); color: var(--wine); font-size: 1.12em; font-style: italic; }
+    .article-content hr { width: 5rem; height: 1px; margin: 3rem auto; border: 0; background: var(--gold); }
+    .comments { margin-top: clamp(2rem, 6vw, 4rem); padding: clamp(1.5rem, 5vw, 3.5rem); background: #fff; border: 1px solid var(--line); }
+    .comments h2 { margin: 0; color: var(--wine); font-family: var(--display); font-size: clamp(2.1rem, 7vw, 3.8rem); font-weight: 400; line-height: 1; }
+    .comments p { margin: .85rem 0 1.5rem; color: var(--muted); font-size: .9rem; }
+    .comments .fb-comments, .comments .fb-comments span, .comments .fb-comments iframe { width: 100% !important; }
+    body.reading .masthead, body.reading .topics, body.reading .journal { display: none; }
     @media (min-width: 700px) {
       .site-nav { display: flex; }
       .back { display: none; }
@@ -115,6 +143,7 @@
       .post.featured .post-visual { min-height: 520px; }
       .post.featured .post-title { font-size: clamp(3rem, 5vw, 5rem); }
       .post.featured .post-body { padding: clamp(2rem, 4vw, 4rem); }
+      .article-content { font-size: 1.26rem; }
     }
     @media (min-width: 1180px) {
       .posts { grid-template-columns: repeat(3, minmax(0, 1fr)); }
@@ -166,15 +195,67 @@
         <p class="status">Preparando os textos…</p>
       </div>
     </section>
+    <section class="reader" id="leitura" aria-live="polite" aria-busy="false"></section>
   </main>
+  <div id="fb-root"></div>
   <script>
     const SUBSTACK_API_URL = "/api/substack";
     const postsContainer = document.querySelector("#conteudo-do-blog");
+    const readerContainer = document.querySelector("#leitura");
+    const requestedPost = new URLSearchParams(window.location.search).get("post");
+    if (requestedPost) {
+      document.body.classList.add("reading");
+      readerContainer.classList.add("is-visible");
+      readerContainer.setAttribute("aria-busy", "true");
+      readerContainer.innerHTML = '<p class="status">Preparando a leitura…</p>';
+    }
     function formatDate(value) {
       if (!value) return "";
       const date = new Date(value);
       if (Number.isNaN(date.getTime())) return "";
       return new Intl.DateTimeFormat("pt-BR", { day: "2-digit", month: "long", year: "numeric" }).format(date);
+    }
+    function internalPostUrl(post) {
+      const url = new URL(window.location.href);
+      url.search = "";
+      url.hash = "";
+      url.searchParams.set("post", post.slug || encodeURIComponent(post.link));
+      return url.href;
+    }
+    function blogIndexUrl() {
+      const url = new URL(window.location.href);
+      url.search = "";
+      url.hash = "";
+      return url.href;
+    }
+    function sanitizeArticle(value) {
+      const template = document.createElement("template");
+      template.innerHTML = value || "";
+      const allowedTags = new Set(["A", "P", "BR", "STRONG", "B", "EM", "I", "U", "S", "H1", "H2", "H3", "H4", "UL", "OL", "LI", "BLOCKQUOTE", "IMG", "FIGURE", "FIGCAPTION", "HR", "DIV", "SPAN"]);
+      template.content.querySelectorAll("*").forEach(element => {
+        if (!allowedTags.has(element.tagName)) {
+          if (["SCRIPT", "STYLE", "IFRAME", "OBJECT", "EMBED", "FORM", "INPUT", "BUTTON", "SVG"].includes(element.tagName)) element.remove();
+          else element.replaceWith(...element.childNodes);
+          return;
+        }
+        const href = element.tagName === "A" ? element.getAttribute("href") || "" : "";
+        const src = element.tagName === "IMG" ? element.getAttribute("src") || "" : "";
+        const alt = element.tagName === "IMG" ? element.getAttribute("alt") || "" : "";
+        [...element.attributes].forEach(attribute => element.removeAttribute(attribute.name));
+        if (element.tagName === "A" && /^https?:\/\//i.test(href)) {
+          element.href = href;
+          element.target = "_blank";
+          element.rel = "noopener noreferrer";
+        }
+        if (element.tagName === "IMG") {
+          if (!/^https?:\/\//i.test(src)) { element.remove(); return; }
+          element.src = src;
+          element.alt = alt;
+          element.loading = "lazy";
+          element.decoding = "async";
+        }
+      });
+      return template.content;
     }
     function createPostCard(post, index) {
       const article = document.createElement("article"); article.className = index === 0 ? "post featured" : "post";
@@ -185,12 +266,51 @@
       const category = document.createElement("span"); category.textContent = post.category;
       const date = document.createElement("time"); date.dateTime = post.date; date.textContent = formatDate(post.date); meta.append(category); if (date.textContent) meta.append(date);
       const title = document.createElement("h3"); title.className = "post-title";
-      const titleLink = document.createElement("a"); titleLink.href = post.link; titleLink.target = "_blank"; titleLink.rel = "noreferrer"; titleLink.textContent = post.title; title.append(titleLink);
+      const pageUrl = internalPostUrl(post);
+      const titleLink = document.createElement("a"); titleLink.href = pageUrl; titleLink.textContent = post.title; title.append(titleLink);
       const excerpt = document.createElement("p"); excerpt.className = "post-excerpt"; excerpt.textContent = post.excerpt ? `${post.excerpt}…` : "Leia o texto completo.";
       const actions = document.createElement("div"); actions.className = "post-actions";
-      const readLink = document.createElement("a"); readLink.className = "read-link"; readLink.href = post.link; readLink.target = "_blank"; readLink.rel = "noreferrer"; readLink.textContent = "Continuar leitura";
-      const commentLink = document.createElement("a"); commentLink.className = "comment-link"; commentLink.href = post.link; commentLink.target = "_blank"; commentLink.rel = "noreferrer"; commentLink.textContent = "Participar da conversa";
+      const readLink = document.createElement("a"); readLink.className = "read-link"; readLink.href = pageUrl; readLink.textContent = "Continuar leitura";
+      const commentLink = document.createElement("a"); commentLink.className = "comment-link"; commentLink.href = `${pageUrl}#comentarios`; commentLink.textContent = "Participar da conversa";
       actions.append(readLink, commentLink); body.append(meta, title, excerpt, actions); article.append(visual, body); return article;
+    }
+    function loadFacebookComments() {
+      if (document.querySelector('script[data-facebook-sdk]')) {
+        if (window.FB) window.FB.XFBML.parse(document.querySelector("#comentarios"));
+        return;
+      }
+      const script = document.createElement("script");
+      script.async = true;
+      script.defer = true;
+      script.crossOrigin = "anonymous";
+      script.dataset.facebookSdk = "true";
+      script.src = "https://connect.facebook.net/pt_BR/sdk.js#xfbml=1&version=v21.0";
+      document.body.append(script);
+    }
+    function renderArticle(post) {
+      const reader = readerContainer;
+      const articleUrl = internalPostUrl(post);
+      document.body.classList.add("reading");
+      document.title = `${post.title} | Laila Hage`;
+      reader.classList.add("is-visible");
+      reader.setAttribute("aria-busy", "false");
+      const back = document.createElement("a"); back.className = "reader-back"; back.href = blogIndexUrl(); back.innerHTML = '<span aria-hidden="true">←</span> Voltar aos textos';
+      const shell = document.createElement("article"); shell.className = "article-shell";
+      const head = document.createElement("header"); head.className = "article-head";
+      const kicker = document.createElement("p"); kicker.className = "article-kicker"; kicker.textContent = post.category || "Reflexão";
+      const title = document.createElement("h1"); title.className = "article-title"; title.textContent = post.title;
+      const date = document.createElement("time"); date.className = "article-date"; date.dateTime = post.date || ""; date.textContent = formatDate(post.date);
+      head.append(kicker, title); if (date.textContent) head.append(date);
+      shell.append(head);
+      if (post.image) {
+        const cover = document.createElement("img"); cover.className = "article-cover"; cover.src = post.image; cover.alt = ""; cover.decoding = "async"; shell.append(cover);
+      }
+      const content = document.createElement("div"); content.className = "article-content"; content.append(sanitizeArticle(post.content)); shell.append(content);
+      const comments = document.createElement("section"); comments.className = "comments"; comments.id = "comentarios";
+      comments.innerHTML = '<h2>Comentários</h2><p>Entre com sua conta do Facebook para participar da conversa.</p>';
+      const plugin = document.createElement("div"); plugin.className = "fb-comments"; plugin.dataset.href = articleUrl; plugin.dataset.width = "100%"; plugin.dataset.numposts = "8"; plugin.dataset.orderBy = "reverse_time"; comments.append(plugin);
+      reader.replaceChildren(back, shell, comments);
+      loadFacebookComments();
     }
     async function loadPosts() {
       postsContainer.setAttribute("aria-busy", "true");
@@ -199,12 +319,25 @@
         if (!response.ok) throw new Error("Fonte indisponível");
         const data = await response.json();
         const posts = Array.isArray(data.posts) ? data.posts : [];
+        if (requestedPost) {
+          const selected = posts.find(post => post.slug === requestedPost || encodeURIComponent(post.link) === requestedPost);
+          if (selected) { renderArticle(selected); return; }
+          document.body.classList.remove("reading");
+          readerContainer.classList.remove("is-visible");
+        }
         postsContainer.replaceChildren();
         if (!posts.length) { postsContainer.innerHTML = '<p class="status">Novos textos serão publicados em breve.</p>'; return; }
         posts.forEach((post, index) => postsContainer.append(createPostCard(post, index)));
       } catch (error) {
         console.error(error);
-        postsContainer.innerHTML = '<p class="status">Novos textos serão publicados em breve.</p>';
+        if (requestedPost) {
+          readerContainer.setAttribute("aria-busy", "false");
+          const back = document.createElement("a"); back.className = "reader-back"; back.href = blogIndexUrl(); back.innerHTML = '<span aria-hidden="true">←</span> Voltar aos textos';
+          const message = document.createElement("p"); message.className = "status"; message.textContent = "Não foi possível abrir este texto agora.";
+          readerContainer.replaceChildren(back, message);
+        } else {
+          postsContainer.innerHTML = '<p class="status">Novos textos serão publicados em breve.</p>';
+        }
       } finally { postsContainer.setAttribute("aria-busy", "false"); }
     }
     loadPosts();
