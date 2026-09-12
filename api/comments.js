@@ -72,9 +72,9 @@ module.exports = async function handler(request, response) {
     if (message.length < 3 || message.length > 2000) return send(response, 400, { error: "O comentário deve ter entre 3 e 2000 caracteres" });
 
     try {
-      const result = await supabaseRequest(config, TABLE_NAME, {
+      const result = await supabaseRequest(config, `${TABLE_NAME}?select=id,author_name,body,created_at`, {
         method: "POST",
-        headers: { Prefer: "return=minimal" },
+        headers: { Prefer: "return=representation" },
         body: JSON.stringify({ post_id: postId, author_name: authorName, body: message, status: "approved" })
       });
       if (!result.ok) {
@@ -82,7 +82,8 @@ module.exports = async function handler(request, response) {
         error.upstreamStatus = result.status;
         throw error;
       }
-      return send(response, 202, { received: true });
+      const rows = await result.json();
+      return send(response, 201, { received: true, comment: Array.isArray(rows) ? rows[0] || null : null });
     } catch (error) {
       console.error("Falha ao receber comentário", error);
       return send(response, 502, { error: "Não foi possível enviar o comentário", upstreamStatus: error.upstreamStatus || null });
