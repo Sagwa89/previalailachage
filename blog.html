@@ -146,6 +146,10 @@
     .comment-author { margin: 0; color: var(--wine); font-family: var(--display); font-size: 1.35rem; }
     .comment-date { display: block; margin-top: .2rem; color: var(--muted); font-size: .7rem; letter-spacing: .08em; text-transform: uppercase; }
     .comment-text { margin: .75rem 0 0; color: var(--ink); white-space: pre-wrap; overflow-wrap: anywhere; }
+    .comment-share { display: flex; flex-wrap: wrap; gap: .45rem; margin-top: 1rem; }
+    .comment-share-label { width: 100%; color: var(--muted); font-size: .68rem; font-weight: 700; letter-spacing: .09em; text-transform: uppercase; }
+    .comment-share a { display: inline-flex; align-items: center; min-height: 2rem; padding: .4rem .65rem; border: 1px solid rgba(84, 11, 14, .24); color: var(--wine); font-size: .68rem; font-weight: 700; letter-spacing: .04em; text-decoration: none; transition: background .2s ease, color .2s ease, border-color .2s ease; }
+    .comment-share a:hover, .comment-share a:focus-visible { border-color: var(--wine); background: var(--wine); color: #fff; }
     .comment-trap { position: absolute !important; left: -10000px !important; width: 1px !important; height: 1px !important; overflow: hidden !important; }
     body.reading .masthead, body.reading .topics, body.reading .journal { display: none; }
     @media (min-width: 700px) {
@@ -307,10 +311,23 @@
     }
     function createCommentItem(comment) {
       const item = document.createElement("article"); item.className = "comment-item";
+      if (comment.id) item.id = `comentario-${comment.id}`;
       const author = document.createElement("h3"); author.className = "comment-author"; author.textContent = comment.author_name || "Leitora";
       const date = document.createElement("time"); date.className = "comment-date"; date.dateTime = comment.created_at || ""; date.textContent = formatDate(comment.created_at);
       const message = document.createElement("p"); message.className = "comment-text"; message.textContent = comment.body || "";
-      item.append(author); if (date.textContent) item.append(date); item.append(message); return item;
+      const pageUrl = new URL(window.location.href); pageUrl.hash = comment.id ? `comentario-${comment.id}` : "comentarios";
+      const excerpt = String(comment.body || "").replace(/\s+/g, " ").slice(0, 180);
+      const shareText = `${comment.author_name || "Leitora"}: “${excerpt}${String(comment.body || "").length > 180 ? "…" : ""}”`;
+      const share = document.createElement("nav"); share.className = "comment-share"; share.setAttribute("aria-label", `Compartilhar comentário de ${comment.author_name || "Leitora"}`);
+      const shareLabel = document.createElement("span"); shareLabel.className = "comment-share-label"; shareLabel.textContent = "Compartilhar comentário"; share.append(shareLabel);
+      const destinations = [
+        ["WhatsApp", `https://wa.me/?text=${encodeURIComponent(`${shareText}\n\n${pageUrl.href}`)}`],
+        ["Facebook", `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(pageUrl.href)}`],
+        ["X", `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(pageUrl.href)}`],
+        ["LinkedIn", `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(pageUrl.href)}`]
+      ];
+      destinations.forEach(([label, href]) => { const link = document.createElement("a"); link.href = href; link.target = "_blank"; link.rel = "noopener noreferrer"; link.textContent = label; share.append(link); });
+      item.append(author); if (date.textContent) item.append(date); item.append(message, share); return item;
     }
     async function loadComments(postId, list) {
       list.setAttribute("aria-busy", "true");
@@ -344,7 +361,13 @@
         if (!response.ok) throw new Error(data.error || "Não foi possível enviar");
         form.reset();
         status.textContent = "Comentário publicado.";
-        await loadComments(postId, list);
+        if (data.comment) {
+          const empty = list.querySelector(".comment-empty");
+          if (empty) empty.remove();
+          list.append(createCommentItem(data.comment));
+        } else {
+          await loadComments(postId, list);
+        }
       } catch (error) {
         status.textContent = error.message || "Não foi possível enviar o comentário agora.";
       } finally {
