@@ -124,8 +124,29 @@
     .article-content hr { width: 5rem; height: 1px; margin: 3rem auto; border: 0; background: var(--gold); }
     .comments { margin-top: clamp(2rem, 6vw, 4rem); padding: clamp(1.5rem, 5vw, 3.5rem); background: #fff; border: 1px solid var(--line); }
     .comments h2 { margin: 0; color: var(--wine); font-family: var(--display); font-size: clamp(2.1rem, 7vw, 3.8rem); font-weight: 400; line-height: 1; }
-    .comments p { margin: .85rem 0 1.5rem; color: var(--muted); font-size: .9rem; }
-    .comments .fb-comments, .comments .fb-comments span, .comments .fb-comments iframe { width: 100% !important; }
+    .comments-intro { margin: .85rem 0 2rem; color: var(--muted); font-size: .95rem; }
+    .comments-layout { display: grid; gap: 2.5rem; }
+    .comment-form { display: grid; gap: 1rem; align-content: start; padding: clamp(1.2rem, 4vw, 2rem); background: var(--linen); border-top: 3px solid var(--gold); }
+    .comment-field { display: grid; gap: .45rem; }
+    .comment-field label { color: var(--wine); font-size: .72rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; }
+    .comment-field input, .comment-field textarea { width: 100%; border: 1px solid rgba(74, 44, 31, .34); border-radius: 0; background: #fff; color: var(--ink); font: 1rem/1.55 var(--sans); outline: none; transition: border-color .2s ease, box-shadow .2s ease; }
+    .comment-field input { min-height: 3.25rem; padding: .72rem .85rem; }
+    .comment-field textarea { min-height: 9rem; padding: .8rem .85rem; resize: vertical; }
+    .comment-field input:focus, .comment-field textarea:focus { border-color: var(--wine); box-shadow: 0 0 0 3px rgba(201, 162, 75, .24); }
+    .comment-submit { min-height: 3.2rem; padding: .8rem 1.15rem; border: 1px solid var(--wine); background: var(--wine); color: #fff; font: 700 .72rem/1 var(--sans); letter-spacing: .11em; text-transform: uppercase; cursor: pointer; transition: background .2s ease, color .2s ease; }
+    .comment-submit:hover, .comment-submit:focus-visible { background: var(--gold); color: var(--wine); }
+    .comment-submit:disabled { cursor: wait; opacity: .62; }
+    .comment-note, .comment-status { margin: 0; color: var(--muted); font-size: .78rem; line-height: 1.55; }
+    .comment-status { min-height: 1.3rem; color: var(--wine); font-weight: 700; }
+    .comment-list { display: grid; gap: 1rem; align-content: start; }
+    .comment-empty { margin: 0; padding: 1.4rem; border-left: 3px solid var(--gold); background: var(--linen); color: var(--muted); }
+    .comment-item { padding: 1.3rem 0; border-bottom: 1px solid var(--line); }
+    .comment-item:first-child { padding-top: 0; }
+    .comment-item:last-child { border-bottom: 0; }
+    .comment-author { margin: 0; color: var(--wine); font-family: var(--display); font-size: 1.35rem; }
+    .comment-date { display: block; margin-top: .2rem; color: var(--muted); font-size: .7rem; letter-spacing: .08em; text-transform: uppercase; }
+    .comment-text { margin: .75rem 0 0; color: var(--ink); white-space: pre-wrap; overflow-wrap: anywhere; }
+    .comment-trap { position: absolute !important; left: -10000px !important; width: 1px !important; height: 1px !important; overflow: hidden !important; }
     body.reading .masthead, body.reading .topics, body.reading .journal { display: none; }
     @media (min-width: 700px) {
       .site-nav { display: flex; }
@@ -144,6 +165,7 @@
       .post.featured .post-title { font-size: clamp(3rem, 5vw, 5rem); }
       .post.featured .post-body { padding: clamp(2rem, 4vw, 4rem); }
       .article-content { font-size: 1.26rem; }
+      .comments-layout { grid-template-columns: minmax(280px, .75fr) minmax(0, 1.25fr); align-items: start; }
     }
     @media (min-width: 1180px) {
       .posts { grid-template-columns: repeat(3, minmax(0, 1fr)); }
@@ -197,9 +219,9 @@
     </section>
     <section class="reader" id="leitura" aria-live="polite" aria-busy="false"></section>
   </main>
-  <div id="fb-root"></div>
   <script>
     const SUBSTACK_API_URL = "/api/substack";
+    const COMMENTS_API_URL = "/api/comments";
     const postsContainer = document.querySelector("#conteudo-do-blog");
     const readerContainer = document.querySelector("#leitura");
     const requestedPost = new URLSearchParams(window.location.search).get("post");
@@ -219,8 +241,17 @@
       const url = new URL(window.location.href);
       url.search = "";
       url.hash = "";
-      url.searchParams.set("post", post.slug || encodeURIComponent(post.link));
+      url.searchParams.set("post", postIdentifier(post));
       return url.href;
+    }
+    function postIdentifier(post) {
+      if (post.slug) return post.slug;
+      try {
+        const segments = new URL(post.link).pathname.split("/").filter(Boolean);
+        return segments.at(-1) || "texto";
+      } catch (error) {
+        return "texto";
+      }
     }
     function blogIndexUrl() {
       const url = new URL(window.location.href);
@@ -274,22 +305,66 @@
       const commentLink = document.createElement("a"); commentLink.className = "comment-link"; commentLink.href = `${pageUrl}#comentarios`; commentLink.textContent = "Participar da conversa";
       actions.append(readLink, commentLink); body.append(meta, title, excerpt, actions); article.append(visual, body); return article;
     }
-    function loadFacebookComments() {
-      if (document.querySelector('script[data-facebook-sdk]')) {
-        if (window.FB) window.FB.XFBML.parse(document.querySelector("#comentarios"));
-        return;
+    function createCommentItem(comment) {
+      const item = document.createElement("article"); item.className = "comment-item";
+      const author = document.createElement("h3"); author.className = "comment-author"; author.textContent = comment.author_name || "Leitora";
+      const date = document.createElement("time"); date.className = "comment-date"; date.dateTime = comment.created_at || ""; date.textContent = formatDate(comment.created_at);
+      const message = document.createElement("p"); message.className = "comment-text"; message.textContent = comment.body || "";
+      item.append(author); if (date.textContent) item.append(date); item.append(message); return item;
+    }
+    async function loadComments(postId, list) {
+      list.setAttribute("aria-busy", "true");
+      try {
+        const response = await fetch(`${COMMENTS_API_URL}?post=${encodeURIComponent(postId)}`, { headers: { Accept: "application/json" } });
+        if (!response.ok) throw new Error("Comentários indisponíveis");
+        const data = await response.json();
+        const comments = Array.isArray(data.comments) ? data.comments : [];
+        list.replaceChildren();
+        if (!comments.length) {
+          const empty = document.createElement("p"); empty.className = "comment-empty"; empty.textContent = "Seja a primeira pessoa a comentar."; list.append(empty); return;
+        }
+        comments.forEach(comment => list.append(createCommentItem(comment)));
+      } catch (error) {
+        const unavailable = document.createElement("p"); unavailable.className = "comment-empty"; unavailable.textContent = "Os comentários estarão disponíveis em breve."; list.replaceChildren(unavailable);
+      } finally {
+        list.setAttribute("aria-busy", "false");
       }
-      const script = document.createElement("script");
-      script.async = true;
-      script.defer = true;
-      script.crossOrigin = "anonymous";
-      script.dataset.facebookSdk = "true";
-      script.src = "https://connect.facebook.net/pt_BR/sdk.js#xfbml=1&version=v24.0&appId=1106878825238529&autoLogAppEvents=1";
-      document.body.append(script);
+    }
+    async function submitComment(event, postId, list) {
+      event.preventDefault();
+      const form = event.currentTarget;
+      const button = form.querySelector("button");
+      const status = form.querySelector(".comment-status");
+      const payload = { postId, name: form.elements.name.value, message: form.elements.message.value, website: form.elements.website.value };
+      button.disabled = true;
+      status.textContent = "Enviando comentário…";
+      try {
+        const response = await fetch(COMMENTS_API_URL, { method: "POST", headers: { "Content-Type": "application/json", Accept: "application/json" }, body: JSON.stringify(payload) });
+        const data = await response.json().catch(() => ({}));
+        if (!response.ok) throw new Error(data.error || "Não foi possível enviar");
+        form.reset();
+        status.textContent = "Comentário publicado.";
+        await loadComments(postId, list);
+      } catch (error) {
+        status.textContent = error.message || "Não foi possível enviar o comentário agora.";
+      } finally {
+        button.disabled = false;
+      }
+    }
+    function createCommentsSection(post) {
+      const postId = postIdentifier(post);
+      const section = document.createElement("section"); section.className = "comments"; section.id = "comentarios";
+      const title = document.createElement("h2"); title.textContent = "Comentários";
+      const intro = document.createElement("p"); intro.className = "comments-intro"; intro.textContent = "Compartilhe sua reflexão e participe da conversa.";
+      const layout = document.createElement("div"); layout.className = "comments-layout";
+      const form = document.createElement("form"); form.className = "comment-form"; form.noValidate = false;
+      form.innerHTML = '<div class="comment-field"><label for="commentName">Seu nome</label><input id="commentName" name="name" type="text" minlength="2" maxlength="80" autocomplete="name" required></div><div class="comment-field"><label for="commentMessage">Seu comentário</label><textarea id="commentMessage" name="message" minlength="3" maxlength="2000" required></textarea></div><div class="comment-trap" aria-hidden="true"><label for="commentWebsite">Não preencha este campo</label><input id="commentWebsite" name="website" type="text" tabindex="-1" autocomplete="off"></div><button class="comment-submit" type="submit">Enviar comentário</button><p class="comment-note">Seu nome e comentário poderão ser publicados nesta página.</p><p class="comment-status" role="status" aria-live="polite"></p>';
+      const list = document.createElement("div"); list.className = "comment-list"; list.setAttribute("aria-live", "polite"); list.innerHTML = '<p class="comment-empty">Carregando comentários…</p>';
+      form.addEventListener("submit", event => submitComment(event, postId, list));
+      layout.append(form, list); section.append(title, intro, layout); loadComments(postId, list); return section;
     }
     function renderArticle(post) {
       const reader = readerContainer;
-      const articleUrl = internalPostUrl(post);
       document.body.classList.add("reading");
       document.title = `${post.title} | Laila Hage`;
       reader.classList.add("is-visible");
@@ -306,11 +381,8 @@
         const cover = document.createElement("img"); cover.className = "article-cover"; cover.src = post.image; cover.alt = ""; cover.decoding = "async"; shell.append(cover);
       }
       const content = document.createElement("div"); content.className = "article-content"; content.append(sanitizeArticle(post.content)); shell.append(content);
-      const comments = document.createElement("section"); comments.className = "comments"; comments.id = "comentarios";
-      comments.innerHTML = '<h2>Comentários</h2><p>Entre com sua conta do Facebook para participar da conversa.</p>';
-      const plugin = document.createElement("div"); plugin.className = "fb-comments"; plugin.dataset.href = articleUrl; plugin.dataset.width = "100%"; plugin.dataset.numposts = "8"; plugin.dataset.orderBy = "reverse_time"; comments.append(plugin);
+      const comments = createCommentsSection(post);
       reader.replaceChildren(back, shell, comments);
-      loadFacebookComments();
     }
     async function loadPosts() {
       postsContainer.setAttribute("aria-busy", "true");
@@ -320,7 +392,7 @@
         const data = await response.json();
         const posts = Array.isArray(data.posts) ? data.posts : [];
         if (requestedPost) {
-          const selected = posts.find(post => post.slug === requestedPost || encodeURIComponent(post.link) === requestedPost);
+          const selected = posts.find(post => postIdentifier(post) === requestedPost || encodeURIComponent(post.link) === requestedPost);
           if (selected) { renderArticle(selected); return; }
           document.body.classList.remove("reading");
           readerContainer.classList.remove("is-visible");
