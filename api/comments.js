@@ -7,8 +7,8 @@ function send(response, status, payload) {
 }
 
 function getConfig() {
-  const url = (process.env.SUPABASE_URL || "").replace(/\/$/, "");
-  const key = process.env.SUPABASE_SECRET_KEY || process.env.SUPABASE_SERVICE_ROLE_KEY || "";
+  const url = String(process.env.SUPABASE_URL || "").trim().replace(/\/+$/, "");
+  const key = String(process.env.SUPABASE_SECRET_KEY || process.env.SUPABASE_SERVICE_ROLE_KEY || "").trim();
   if (!url || !key) return null;
   return { url, key };
 }
@@ -41,12 +41,16 @@ module.exports = async function handler(request, response) {
     try {
       const query = `${TABLE_NAME}?select=id,author_name,body,created_at&post_id=eq.${encodeURIComponent(postId)}&status=eq.approved&order=created_at.asc&limit=100`;
       const result = await supabaseRequest(config, query, { method: "GET" });
-      if (!result.ok) throw new Error(`Supabase ${result.status}`);
+      if (!result.ok) {
+        const error = new Error(`Supabase ${result.status}`);
+        error.upstreamStatus = result.status;
+        throw error;
+      }
       const comments = await result.json();
       return send(response, 200, { comments });
     } catch (error) {
       console.error("Falha ao carregar comentários", error);
-      return send(response, 502, { error: "Não foi possível carregar os comentários" });
+      return send(response, 502, { error: "Não foi possível carregar os comentários", upstreamStatus: error.upstreamStatus || null });
     }
   }
 
@@ -73,11 +77,15 @@ module.exports = async function handler(request, response) {
         headers: { Prefer: "return=minimal" },
         body: JSON.stringify({ post_id: postId, author_name: authorName, body: message, status: "approved" })
       });
-      if (!result.ok) throw new Error(`Supabase ${result.status}`);
+      if (!result.ok) {
+        const error = new Error(`Supabase ${result.status}`);
+        error.upstreamStatus = result.status;
+        throw error;
+      }
       return send(response, 202, { received: true });
     } catch (error) {
       console.error("Falha ao receber comentário", error);
-      return send(response, 502, { error: "Não foi possível enviar o comentário" });
+      return send(response, 502, { error: "Não foi possível enviar o comentário", upstreamStatus: error.upstreamStatus || null });
     }
   }
 
