@@ -3,11 +3,233 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta http-equiv="refresh" content="0; url=blog/">
-  <link rel="canonical" href="https://previalailachage.vercel.app/blog/">
+  <meta name="description" content="Artigos e reflexões de Laila Hage sobre direito, proteção, fé e reconstrução.">
+  <meta name="theme-color" content="#540b0e">
+  <meta name="author" content="Laila Hage">
+  <meta name="robots" content="index, follow">
   <title>Blog | Laila Hage</title>
+  <link rel="canonical" href="https://previalailachage.vercel.app/blog.html">
+  <meta property="og:locale" content="pt_BR">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Laila Hage">
+  <meta property="og:url" content="https://previalailachage.vercel.app/blog.html">
+  <meta property="og:title" content="Blog | Laila Hage">
+  <meta property="og:description" content="Palavras sobre justiça, proteção, fé e os caminhos possíveis depois do silêncio.">
+  <meta property="og:image" content="https://previalailachage.vercel.app/ogimage.png">
+  <meta property="og:image:type" content="image/png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Blog | Laila Hage">
+  <meta name="twitter:description" content="Palavras sobre justiça, proteção, fé e reconstrução.">
+  <meta name="twitter:image" content="https://previalailachage.vercel.app/ogimage.png">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='4' fill='%23540b0e'/%3E%3Cpath d='M17 14h8v28h22v8H17z' fill='%23c9a24b'/%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&amp;family=Playfair+Display:ital,wght@0,400;1,400&amp;display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --wine: #540b0e;
+      --crimson: #942023;
+      --gold: #c9a24b;
+      --linen: #f4ede4;
+      --coffee: #4a2c1f;
+      --ink: #261710;
+      --paper: #fffaf4;
+      --muted: #79675d;
+      --line: rgba(74, 44, 31, .2);
+      --display: "Playfair Display", Georgia, serif;
+      --sans: Montserrat, "Century Gothic", Arial, sans-serif;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body { margin: 0; background: var(--linen); color: var(--ink); font-family: var(--sans); font-size: 16px; line-height: 1.7; overflow-x: hidden; }
+    a { color: inherit; }
+    img { display: block; max-width: 100%; }
+    ::selection { background: var(--gold); color: var(--wine); }
+    .site-header { position: sticky; top: 0; z-index: 20; min-height: 4.5rem; display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: .8rem max(1.2rem, calc((100vw - 1180px) / 2)); background: rgba(255, 250, 244, .96); border-bottom: 1px solid var(--line); color: var(--wine); backdrop-filter: blur(12px); }
+    .brand { font-family: var(--display); font-size: clamp(1.3rem, 4vw, 1.75rem); line-height: 1; letter-spacing: .06em; text-decoration: none; text-transform: uppercase; white-space: nowrap; }
+    .brand span { color: var(--gold); }
+    .site-nav { display: none; align-items: center; gap: clamp(1rem, 2vw, 2rem); }
+    .site-nav a { font-size: .7rem; letter-spacing: .12em; text-decoration: none; text-transform: uppercase; white-space: nowrap; }
+    .site-nav a:hover, .site-nav a:focus-visible { color: var(--crimson); }
+    .back { display: inline-flex; align-items: center; gap: .55rem; min-height: 2.75rem; padding: .55rem .85rem; border: 1px solid var(--wine); font-size: .7rem; letter-spacing: .08em; text-decoration: none; text-transform: uppercase; white-space: nowrap; }
+    .back:hover { background: var(--wine); color: var(--paper); }
+    .masthead { position: relative; overflow: hidden; background: var(--wine); color: var(--paper); }
+    .masthead-grid { min-height: min(760px, calc(100svh - 4.5rem)); display: grid; grid-template-columns: 1fr; }
+    .masthead-copy { position: relative; z-index: 2; display: flex; flex-direction: column; justify-content: center; padding: clamp(4rem, 10vw, 7rem) max(1.3rem, calc((100vw - 1180px) / 2)) 3rem; }
+    .edition { display: flex; align-items: center; gap: .75rem; margin: 0 0 1.5rem; color: var(--gold); font-size: .72rem; letter-spacing: .2em; text-transform: uppercase; }
+    .edition::before { content: ""; width: 2.6rem; height: 1px; background: currentColor; }
+    h1 { max-width: 760px; margin: 0; font-family: var(--display); font-size: clamp(3.6rem, 17vw, 7.4rem); font-weight: 400; letter-spacing: -.05em; line-height: .86; }
+    h1 em { color: var(--gold); font-weight: 400; }
+    .intro { max-width: 610px; margin: 1.8rem 0 0; color: rgba(255, 250, 244, .76); font-size: clamp(1rem, 1.4vw, 1.15rem); }
+    .masthead-portrait { position: relative; min-height: 420px; overflow: hidden; background: var(--coffee); }
+    .masthead-portrait img { width: 100%; height: 100%; object-fit: cover; object-position: center top; filter: saturate(.78) contrast(1.09) brightness(.88); transform: scale(1.01); }
+    .masthead-portrait::after { content: ""; position: absolute; inset: 0; background: radial-gradient(circle at 52% 34%, transparent 36%, rgba(38, 23, 16, .28) 100%), linear-gradient(180deg, transparent 55%, rgba(38, 23, 16, .5)); pointer-events: none; }
+    .portrait-caption { position: absolute; z-index: 2; right: 1.2rem; bottom: 1rem; color: rgba(255, 250, 244, .7); font-size: .65rem; letter-spacing: .14em; text-transform: uppercase; }
+    .topics { overflow-x: auto; padding: 0 max(1.2rem, calc((100vw - 1180px) / 2)); background: var(--paper); border-bottom: 1px solid var(--line); scrollbar-width: none; }
+    .topics::-webkit-scrollbar { display: none; }
+    .topics-inner { min-width: max-content; min-height: 3.7rem; display: flex; align-items: center; gap: 1.6rem; }
+    .topics span { color: var(--wine); font-size: .68rem; letter-spacing: .14em; text-transform: uppercase; }
+    .topics span + span::before { content: "•"; margin-right: 1.6rem; color: var(--gold); }
+    .journal { padding: clamp(4rem, 8vw, 7rem) max(1.2rem, calc((100vw - 1180px) / 2)); }
+    .journal-head { display: grid; gap: 1.2rem; align-items: end; margin-bottom: clamp(2.5rem, 5vw, 4rem); padding-bottom: 1.5rem; border-bottom: 1px solid var(--wine); }
+    .journal-head p { margin: 0; }
+    .section-label { color: var(--crimson); font-size: .72rem; letter-spacing: .18em; text-transform: uppercase; }
+    .journal-head h2 { margin: 0; color: var(--wine); font-family: var(--display); font-size: clamp(2.8rem, 10vw, 5.7rem); font-weight: 400; letter-spacing: -.04em; line-height: .92; }
+    .journal-intro { max-width: 580px; color: var(--muted); }
+    .posts { display: grid; gap: 2rem 1.4rem; }
+    .status { margin: 0; padding: clamp(2rem, 6vw, 4rem); background: var(--paper); border-top: 3px solid var(--gold); color: var(--wine); font-family: var(--display); font-size: clamp(1.8rem, 5vw, 3rem); line-height: 1.1; text-align: center; }
+    .post { min-width: 0; display: flex; flex-direction: column; background: var(--paper); border: 1px solid var(--line); transition: transform .25s ease, box-shadow .25s ease; }
+    .post:hover { transform: translateY(-4px); box-shadow: 0 18px 42px rgba(74, 44, 31, .1); }
+    .post-visual { position: relative; min-height: 240px; overflow: hidden; background: var(--wine); }
+    .post-visual img { width: 100%; height: 100%; position: absolute; inset: 0; object-fit: cover; filter: saturate(.78) contrast(1.08) brightness(.88); transition: transform .5s ease; }
+    .post:hover .post-visual img { transform: scale(1.025); }
+    .post-visual::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, transparent 45%, rgba(38, 23, 16, .45)); pointer-events: none; }
+    .post-visual.placeholder { display: grid; place-items: center; background: linear-gradient(135deg, var(--wine), var(--crimson)); }
+    .post-visual.placeholder::before { content: "“"; color: rgba(201, 162, 75, .82); font-family: var(--display); font-size: 10rem; line-height: .5; transform: translateY(.4rem); }
+    .post-body { flex: 1; display: flex; flex-direction: column; padding: clamp(1.4rem, 4vw, 2.2rem); }
+    .post-meta { display: flex; flex-wrap: wrap; align-items: center; gap: .65rem; margin-bottom: 1rem; color: var(--crimson); font-size: .68rem; letter-spacing: .12em; text-transform: uppercase; }
+    .post-meta span + time::before { content: "•"; margin-right: .65rem; color: var(--gold); }
+    .post-title { margin: 0; color: var(--wine); font-family: var(--display); font-size: clamp(2rem, 6.5vw, 3.25rem); font-weight: 400; letter-spacing: -.025em; line-height: 1; }
+    .post-title a { text-decoration: none; }
+    .post-title a:hover, .post-title a:focus-visible { color: var(--crimson); }
+    .post-excerpt { margin: 1.1rem 0 1.5rem; color: var(--muted); }
+    .post-actions { margin-top: auto; padding-top: 1.2rem; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 1rem; border-top: 1px solid var(--line); }
+    .read-link, .comment-link { color: var(--wine); font-size: .7rem; letter-spacing: .1em; text-decoration: none; text-transform: uppercase; }
+    .read-link { display: inline-flex; align-items: center; gap: .65rem; font-weight: 700; }
+    .read-link::after { content: "→"; color: var(--gold); font-size: 1.15rem; transition: transform .2s ease; }
+    .read-link:hover::after { transform: translateX(4px); }
+    .comment-link { color: var(--muted); text-decoration: underline; text-underline-offset: .25rem; }
+    @media (min-width: 700px) {
+      .site-nav { display: flex; }
+      .back { display: none; }
+      .journal-head { grid-template-columns: minmax(0, 1fr) minmax(280px, .65fr); }
+      .journal-head .section-label { grid-column: 1 / -1; }
+      .posts { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+    @media (min-width: 920px) {
+      .masthead-grid { grid-template-columns: minmax(0, 1.08fr) minmax(380px, .92fr); }
+      .masthead-copy { padding-right: clamp(2rem, 5vw, 6rem); }
+      .masthead-portrait { min-height: 0; }
+      .posts { gap: 2.4rem 1.8rem; }
+      .post.featured { grid-column: 1 / -1; display: grid; grid-template-columns: minmax(0, 1.12fr) minmax(350px, .88fr); }
+      .post.featured .post-visual { min-height: 520px; }
+      .post.featured .post-title { font-size: clamp(3rem, 5vw, 5rem); }
+      .post.featured .post-body { padding: clamp(2rem, 4vw, 4rem); }
+    }
+    @media (min-width: 1180px) {
+      .posts { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+      .post.featured { grid-column: 1 / -1; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      *, *::before, *::after { transition-duration: .01ms !important; }
+    }
+  </style>
 </head>
 <body>
-  <p>Abrindo o <a href="blog/">blog de Laila Hage</a>.</p>
+  <header class="site-header">
+    <a class="brand" href="index.html">Laila <span>Hage</span></a>
+    <nav class="site-nav" aria-label="Navegação principal">
+      <a href="index.html#historia">História</a>
+      <a href="index.html#lumen">Lumen</a>
+      <a href="index.html#novo-livro">Novo livro</a>
+      <a href="index.html#instituto">Instituto</a>
+    </nav>
+    <a class="back" href="index.html"><span aria-hidden="true">←</span> Voltar</a>
+  </header>
+  <main>
+    <section class="masthead">
+      <div class="masthead-grid">
+        <div class="masthead-copy">
+          <p class="edition">Caderno de Laila Hage</p>
+          <h1>Palavra, justiça e <em>recomeço.</em></h1>
+          <p class="intro">Textos para compreender o que precisa mudar, dar nome ao que ainda fere e encontrar caminhos possíveis depois do silêncio.</p>
+        </div>
+        <div class="masthead-portrait">
+          <img src="lailachage2.webp" alt="Retrato de Laila Hage" loading="eager" decoding="async" fetchpriority="high">
+          <span class="portrait-caption">Laila Hage | Salvador, Bahia</span>
+        </div>
+      </div>
+    </section>
+    <div class="topics" aria-label="Temas do blog">
+      <div class="topics-inner">
+        <span>Direito</span><span>Proteção</span><span>Violência institucional</span><span>Fé</span><span>Reconstrução</span>
+      </div>
+    </div>
+    <section class="journal" aria-labelledby="journalTitle">
+      <div class="journal-head">
+        <p class="section-label">Caderno aberto</p>
+        <h2 id="journalTitle">Últimos textos</h2>
+        <p class="journal-intro">Reflexões sobre justiça, proteção, fé e os caminhos possíveis depois do silêncio.</p>
+      </div>
+      <div class="posts" id="conteudo-do-blog" aria-live="polite" aria-busy="true">
+        <p class="status">Preparando os textos…</p>
+      </div>
+    </section>
+  </main>
+  <script>
+    const BLOGGER_FEED_URL = "https://lailahage.blogspot.com/feeds/posts/default";
+    const postsContainer = document.querySelector("#conteudo-do-blog");
+    function requestBloggerFeed() {
+      return new Promise((resolve, reject) => {
+        const callbackName = `receiveBloggerFeed${Date.now()}`;
+        const script = document.createElement("script");
+        const timeout = window.setTimeout(() => { cleanup(); reject(new Error("Tempo de resposta excedido")); }, 12000);
+        function cleanup() { window.clearTimeout(timeout); delete window[callbackName]; script.remove(); }
+        window[callbackName] = data => { cleanup(); resolve(data); };
+        script.onerror = () => { cleanup(); reject(new Error("Fonte indisponível")); };
+        script.src = `${BLOGGER_FEED_URL}?alt=json-in-script&callback=${callbackName}`;
+        document.head.append(script);
+      });
+    }
+    function htmlFragment(value) { const template = document.createElement("template"); template.innerHTML = value || ""; return template; }
+    function stripHtml(value) { return htmlFragment(value).content.textContent.replace(/\s+/g, " ").trim(); }
+    function extractImage(value) { const image = htmlFragment(value).content.querySelector("img"); return image ? image.getAttribute("src") || "" : ""; }
+    function formatDate(value) {
+      if (!value) return "";
+      const date = new Date(value);
+      if (Number.isNaN(date.getTime())) return "";
+      return new Intl.DateTimeFormat("pt-BR", { day: "2-digit", month: "long", year: "numeric" }).format(date);
+    }
+    function getPostLink(entry) { const links = Array.isArray(entry.link) ? entry.link : []; const alternate = links.find(link => link.rel === "alternate"); return alternate ? alternate.href : "#"; }
+    function normalizePost(entry) {
+      const content = entry.content && entry.content.$t ? entry.content.$t : "";
+      const summary = entry.summary && entry.summary.$t ? entry.summary.$t : content;
+      const categories = Array.isArray(entry.category) ? entry.category : [];
+      const thumbnail = entry.media$thumbnail && entry.media$thumbnail.url ? entry.media$thumbnail.url : "";
+      return { title: entry.title && entry.title.$t ? entry.title.$t : "Novo texto", date: entry.published && entry.published.$t ? entry.published.$t : "", link: getPostLink(entry), category: categories[0] && categories[0].term ? categories[0].term : "Reflexão", excerpt: stripHtml(summary).slice(0, 240), image: extractImage(content) || thumbnail };
+    }
+    function createPostCard(post, index) {
+      const article = document.createElement("article"); article.className = index === 0 ? "post featured" : "post";
+      const visual = document.createElement("div"); visual.className = post.image ? "post-visual" : "post-visual placeholder";
+      if (post.image) { const image = document.createElement("img"); image.src = post.image; image.alt = ""; image.loading = index === 0 ? "eager" : "lazy"; image.decoding = "async"; visual.append(image); }
+      const body = document.createElement("div"); body.className = "post-body";
+      const meta = document.createElement("div"); meta.className = "post-meta";
+      const category = document.createElement("span"); category.textContent = post.category;
+      const date = document.createElement("time"); date.dateTime = post.date; date.textContent = formatDate(post.date); meta.append(category); if (date.textContent) meta.append(date);
+      const title = document.createElement("h3"); title.className = "post-title";
+      const titleLink = document.createElement("a"); titleLink.href = post.link; titleLink.target = "_blank"; titleLink.rel = "noreferrer"; titleLink.textContent = post.title; title.append(titleLink);
+      const excerpt = document.createElement("p"); excerpt.className = "post-excerpt"; excerpt.textContent = post.excerpt ? `${post.excerpt}…` : "Leia o texto completo.";
+      const actions = document.createElement("div"); actions.className = "post-actions";
+      const readLink = document.createElement("a"); readLink.className = "read-link"; readLink.href = post.link; readLink.target = "_blank"; readLink.rel = "noreferrer"; readLink.textContent = "Continuar leitura";
+      const commentLink = document.createElement("a"); commentLink.className = "comment-link"; commentLink.href = post.link; commentLink.target = "_blank"; commentLink.rel = "noreferrer"; commentLink.textContent = "Participar da conversa";
+      actions.append(readLink, commentLink); body.append(meta, title, excerpt, actions); article.append(visual, body); return article;
+    }
+    async function loadPosts() {
+      postsContainer.setAttribute("aria-busy", "true");
+      try {
+        const data = await requestBloggerFeed();
+        const entries = data.feed && Array.isArray(data.feed.entry) ? data.feed.entry : [];
+        const posts = entries.map(normalizePost);
+        postsContainer.replaceChildren();
+        if (!posts.length) { postsContainer.innerHTML = '<p class="status">Novos textos serão publicados em breve.</p>'; return; }
+        posts.forEach((post, index) => postsContainer.append(createPostCard(post, index)));
+      } catch (error) {
+        console.error(error);
+        postsContainer.innerHTML = '<p class="status">Novos textos serão publicados em breve.</p>';
+      } finally { postsContainer.setAttribute("aria-busy", "false"); }
+    }
+    loadPosts();
+  </script>
 </body>
 </html>
