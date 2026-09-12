@@ -122,6 +122,12 @@
     .article-content img { width: auto; max-width: 100%; height: auto; margin: 2.25rem auto; }
     .article-content blockquote { margin-left: 0; padding: .5rem 0 .5rem clamp(1.2rem, 4vw, 2rem); border-left: 3px solid var(--gold); color: var(--wine); font-size: 1.12em; font-style: italic; }
     .article-content hr { width: 5rem; height: 1px; margin: 3rem auto; border: 0; background: var(--gold); }
+    .article-share { display: grid; gap: .8rem; margin: 1.5rem 0 2rem; padding: 1.1rem 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+    .article-share-title { color: var(--wine); font-size: .72rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; }
+    .article-share-options { display: flex; flex-wrap: wrap; gap: .5rem; }
+    .article-share a, .article-share button { display: inline-flex; align-items: center; justify-content: center; min-height: 2.5rem; padding: .55rem .8rem; border: 1px solid rgba(84, 11, 14, .28); border-radius: 0; background: transparent; color: var(--wine); font: 700 .7rem/1 var(--sans); letter-spacing: .04em; text-decoration: none; cursor: pointer; transition: background .2s ease, color .2s ease, border-color .2s ease; }
+    .article-share a:hover, .article-share a:focus-visible, .article-share button:hover, .article-share button:focus-visible { border-color: var(--wine); background: var(--wine); color: #fff; }
+    .share-feedback { min-height: 1.2rem; margin: 0; color: var(--muted); font-size: .76rem; }
     .comments { margin-top: clamp(2rem, 6vw, 4rem); padding: clamp(1.5rem, 5vw, 3.5rem); background: #fff; border: 1px solid var(--line); }
     .comments h2 { margin: 0; color: var(--wine); font-family: var(--display); font-size: clamp(2.1rem, 7vw, 3.8rem); font-weight: 400; line-height: 1; }
     .comments-intro { margin: .85rem 0 2rem; color: var(--muted); font-size: .95rem; }
@@ -150,6 +156,9 @@
     .comment-share-label { width: 100%; color: var(--muted); font-size: .68rem; font-weight: 700; letter-spacing: .09em; text-transform: uppercase; }
     .comment-share a { display: inline-flex; align-items: center; min-height: 2rem; padding: .4rem .65rem; border: 1px solid rgba(84, 11, 14, .24); color: var(--wine); font-size: .68rem; font-weight: 700; letter-spacing: .04em; text-decoration: none; transition: background .2s ease, color .2s ease, border-color .2s ease; }
     .comment-share a:hover, .comment-share a:focus-visible { border-color: var(--wine); background: var(--wine); color: #fff; }
+    .comment-report { margin-top: .8rem; padding: 0; border: 0; background: transparent; color: var(--muted); font: 700 .68rem/1 var(--sans); letter-spacing: .05em; text-decoration: underline; text-underline-offset: .2rem; cursor: pointer; }
+    .comment-report:disabled { cursor: default; text-decoration: none; }
+    .turnstile-slot { min-height: 1px; }
     .comment-trap { position: absolute !important; left: -10000px !important; width: 1px !important; height: 1px !important; overflow: hidden !important; }
     body.reading .masthead, body.reading .topics, body.reading .journal { display: none; }
     @media (min-width: 700px) {
@@ -226,6 +235,7 @@
   <script>
     const SUBSTACK_API_URL = "/api/substack";
     const COMMENTS_API_URL = "/api/comments";
+    const PUBLIC_SITE_URL = "https://previalailachage.vercel.app";
     const postsContainer = document.querySelector("#conteudo-do-blog");
     const readerContainer = document.querySelector("#leitura");
     const requestedPost = new URLSearchParams(window.location.search).get("post");
@@ -262,6 +272,35 @@
       url.search = "";
       url.hash = "";
       return url.href;
+    }
+    function articleShareUrl(post) {
+      return `${PUBLIC_SITE_URL}/artigo/${encodeURIComponent(postIdentifier(post))}`;
+    }
+    async function copyText(value) {
+      if (navigator.clipboard && window.isSecureContext) return navigator.clipboard.writeText(value);
+      const field = document.createElement("textarea"); field.value = value; field.style.position = "fixed"; field.style.opacity = "0"; document.body.append(field); field.select(); document.execCommand("copy"); field.remove();
+    }
+    function createArticleShare(post) {
+      const url = articleShareUrl(post);
+      const invitation = `Quero compartilhar com você esta reflexão de Laila Hage: ${post.title}`;
+      const section = document.createElement("section"); section.className = "article-share"; section.setAttribute("aria-label", "Compartilhar este texto");
+      const title = document.createElement("span"); title.className = "article-share-title"; title.textContent = "Compartilhar este texto";
+      const options = document.createElement("div"); options.className = "article-share-options";
+      const destinations = [
+        ["WhatsApp", `https://wa.me/?text=${encodeURIComponent(`${invitation}\n\n${url}`)}`],
+        ["Facebook", `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`],
+        ["X", `https://twitter.com/intent/tweet?text=${encodeURIComponent(invitation)}&url=${encodeURIComponent(url)}`],
+        ["LinkedIn", `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}`]
+      ];
+      if (navigator.share) {
+        const nativeButton = document.createElement("button"); nativeButton.type = "button"; nativeButton.textContent = "Compartilhar";
+        nativeButton.addEventListener("click", () => navigator.share({ title: post.title, text: invitation, url }).catch(() => {})); options.append(nativeButton);
+      }
+      destinations.forEach(([label, href]) => { const link = document.createElement("a"); link.href = href; link.target = "_blank"; link.rel = "noopener noreferrer"; link.textContent = label; options.append(link); });
+      const copy = document.createElement("button"); copy.type = "button"; copy.textContent = "Copiar link";
+      const feedback = document.createElement("p"); feedback.className = "share-feedback"; feedback.setAttribute("role", "status");
+      copy.addEventListener("click", async () => { try { await copyText(url); feedback.textContent = "Link copiado."; } catch (error) { feedback.textContent = "Não foi possível copiar o link."; } });
+      options.append(copy); section.append(title, options, feedback); return section;
     }
     function sanitizeArticle(value) {
       const template = document.createElement("template");
@@ -327,7 +366,46 @@
         ["LinkedIn", `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(pageUrl.href)}`]
       ];
       destinations.forEach(([label, href]) => { const link = document.createElement("a"); link.href = href; link.target = "_blank"; link.rel = "noopener noreferrer"; link.textContent = label; share.append(link); });
-      item.append(author); if (date.textContent) item.append(date); item.append(message, share); return item;
+      const report = document.createElement("button"); report.className = "comment-report"; report.type = "button"; report.textContent = "Denunciar comentário";
+      report.addEventListener("click", async () => {
+        report.disabled = true; report.textContent = "Enviando denúncia…";
+        try {
+          const response = await fetch(COMMENTS_API_URL, { method: "POST", headers: { "Content-Type": "application/json", Accept: "application/json" }, body: JSON.stringify({ action: "report", commentId: comment.id }) });
+          if (!response.ok) throw new Error();
+          report.textContent = "Denúncia recebida";
+        } catch (error) {
+          report.disabled = false; report.textContent = "Tentar denunciar novamente";
+        }
+      });
+      item.append(author); if (date.textContent) item.append(date); item.append(message, share); if (comment.id) item.append(report); return item;
+    }
+    let turnstileLoader;
+    function loadTurnstileScript() {
+      if (window.turnstile) return Promise.resolve();
+      if (turnstileLoader) return turnstileLoader;
+      turnstileLoader = new Promise((resolve, reject) => {
+        const script = document.createElement("script"); script.src = "https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit"; script.async = true; script.defer = true; script.onload = resolve; script.onerror = reject; document.head.append(script);
+      });
+      return turnstileLoader;
+    }
+    async function setupTurnstile(form) {
+      try {
+        const response = await fetch(`${COMMENTS_API_URL}?config=1`, { headers: { Accept: "application/json" } });
+        const data = await response.json();
+        if (!response.ok || !data.turnstileEnabled || !data.turnstileSiteKey) return;
+        form.dataset.turnstileRequired = "true";
+        await loadTurnstileScript();
+        const slot = form.querySelector(".turnstile-slot");
+        form.turnstileWidget = window.turnstile.render(slot, {
+          sitekey: data.turnstileSiteKey,
+          appearance: "interaction-only",
+          theme: "light",
+          callback(token) { form.elements.turnstileToken.value = token; },
+          "expired-callback"() { form.elements.turnstileToken.value = ""; }
+        });
+      } catch (error) {
+        form.querySelector(".comment-status").textContent = "A proteção do formulário não pôde ser carregada.";
+      }
     }
     async function loadComments(postId, list) {
       list.setAttribute("aria-busy", "true");
@@ -352,7 +430,8 @@
       const form = event.currentTarget;
       const button = form.querySelector("button");
       const status = form.querySelector(".comment-status");
-      const payload = { postId, name: form.elements.name.value, message: form.elements.message.value, website: form.elements.website.value };
+      const payload = { postId, name: form.elements.name.value, message: form.elements.message.value, website: form.elements.website.value, turnstileToken: form.elements.turnstileToken.value };
+      if (form.dataset.turnstileRequired === "true" && !payload.turnstileToken) { status.textContent = "Aguarde a verificação de segurança."; return; }
       button.disabled = true;
       status.textContent = "Enviando comentário…";
       try {
@@ -360,6 +439,7 @@
         const data = await response.json().catch(() => ({}));
         if (!response.ok) throw new Error(data.error || "Não foi possível enviar");
         form.reset();
+        if (window.turnstile && form.turnstileWidget !== undefined) window.turnstile.reset(form.turnstileWidget);
         status.textContent = "Comentário publicado.";
         if (data.comment) {
           const empty = list.querySelector(".comment-empty");
@@ -381,9 +461,10 @@
       const intro = document.createElement("p"); intro.className = "comments-intro"; intro.textContent = "Compartilhe sua reflexão e participe da conversa.";
       const layout = document.createElement("div"); layout.className = "comments-layout";
       const form = document.createElement("form"); form.className = "comment-form"; form.noValidate = false;
-      form.innerHTML = '<div class="comment-field"><label for="commentName">Seu nome</label><input id="commentName" name="name" type="text" minlength="2" maxlength="80" autocomplete="name" required></div><div class="comment-field"><label for="commentMessage">Seu comentário</label><textarea id="commentMessage" name="message" minlength="3" maxlength="2000" required></textarea></div><div class="comment-trap" aria-hidden="true"><label for="commentWebsite">Não preencha este campo</label><input id="commentWebsite" name="website" type="text" tabindex="-1" autocomplete="off"></div><button class="comment-submit" type="submit">Enviar comentário</button><p class="comment-note">Seu nome e comentário poderão ser publicados nesta página.</p><p class="comment-status" role="status" aria-live="polite"></p>';
+      form.innerHTML = '<div class="comment-field"><label for="commentName">Seu nome</label><input id="commentName" name="name" type="text" minlength="2" maxlength="80" autocomplete="name" required></div><div class="comment-field"><label for="commentMessage">Seu comentário</label><textarea id="commentMessage" name="message" minlength="3" maxlength="2000" required></textarea></div><div class="comment-trap" aria-hidden="true"><label for="commentWebsite">Não preencha este campo</label><input id="commentWebsite" name="website" type="text" tabindex="-1" autocomplete="off"></div><input name="turnstileToken" type="hidden"><div class="turnstile-slot" aria-label="Verificação de segurança"></div><button class="comment-submit" type="submit">Enviar comentário</button><p class="comment-note">Seu nome e comentário poderão ser publicados nesta página.</p><p class="comment-status" role="status" aria-live="polite"></p>';
       const list = document.createElement("div"); list.className = "comment-list"; list.setAttribute("aria-live", "polite"); list.innerHTML = '<p class="comment-empty">Carregando comentários…</p>';
       form.addEventListener("submit", event => submitComment(event, postId, list));
+      setupTurnstile(form);
       layout.append(form, list); section.append(title, intro, layout); loadComments(postId, list); return section;
     }
     function renderArticle(post) {
@@ -399,7 +480,7 @@
       const title = document.createElement("h1"); title.className = "article-title"; title.textContent = post.title;
       const date = document.createElement("time"); date.className = "article-date"; date.dateTime = post.date || ""; date.textContent = formatDate(post.date);
       head.append(kicker, title); if (date.textContent) head.append(date);
-      shell.append(head);
+      shell.append(head, createArticleShare(post));
       if (post.image) {
         const cover = document.createElement("img"); cover.className = "article-cover"; cover.src = post.image; cover.alt = ""; cover.decoding = "async"; shell.append(cover);
       }
