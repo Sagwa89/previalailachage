@@ -54,7 +54,7 @@
     .back { display: inline-flex; align-items: center; gap: .55rem; min-height: 2.75rem; padding: .55rem .85rem; border: 1px solid var(--wine); font-size: .7rem; letter-spacing: .08em; text-decoration: none; text-transform: uppercase; white-space: nowrap; }
     .back:hover { background: var(--wine); color: var(--paper); }
     .masthead { position: relative; overflow: hidden; background: var(--wine); color: var(--paper); }
-    .masthead-grid { min-height: min(760px, calc(100svh - 4.5rem)); display: grid; grid-template-columns: 1fr; }
+    .masthead-grid { min-height: calc(100svh - 4.5rem); display: grid; grid-template-columns: 1fr; }
     .masthead-copy { position: relative; z-index: 2; display: flex; flex-direction: column; justify-content: center; padding: clamp(4rem, 10vw, 7rem) max(1.3rem, calc((100vw - 1180px) / 2)) 3rem; }
     .blog-signature { display: inline-flex; align-items: center; gap: .8rem; width: fit-content; margin-bottom: 1.5rem; color: var(--gold); }
     .blog-signature-icon { position: relative; width: 3.7rem; height: 3.7rem; display: grid; place-items: center; border: 1px solid rgba(201,162,75,.72); border-radius: 50%; }
@@ -491,6 +491,15 @@
     async function submitComment(event, postId, list) {
       event.preventDefault();
       const form = event.currentTarget;
+      const nameField = form.elements.name;
+      const messageField = form.elements.message;
+      const cleanName = nameField.value.trim().replace(/\s{2,}/g, " ");
+      const hasValidName = /^[A-Za-zÀ-ÖØ-öø-ÿ'’ ]{2,80}$/.test(cleanName);
+      const hasMeaningfulComment = (messageField.value.match(/[A-Za-zÀ-ÖØ-öø-ÿ]/g) || []).length >= 3;
+      nameField.setCustomValidity(hasValidName ? "" : "Digite um nome usando apenas letras.");
+      messageField.setCustomValidity(hasMeaningfulComment ? "" : "Escreva um comentário com pelo menos três letras.");
+      if (!form.reportValidity()) return;
+      nameField.value = cleanName;
       const button = form.querySelector("button");
       const status = form.querySelector(".comment-status");
       const payload = { postId, name: form.elements.name.value, message: form.elements.message.value, website: form.elements.website.value, turnstileToken: form.elements.turnstileToken.value };
@@ -524,7 +533,14 @@
       const intro = document.createElement("p"); intro.className = "comments-intro"; intro.textContent = "Compartilhe sua reflexão e participe da conversa.";
       const layout = document.createElement("div"); layout.className = "comments-layout";
       const form = document.createElement("form"); form.className = "comment-form"; form.noValidate = false;
-      form.innerHTML = '<div class="comment-field"><label for="commentName">Seu nome</label><input id="commentName" name="name" type="text" minlength="2" maxlength="80" autocomplete="name" required></div><div class="comment-field"><label for="commentMessage">Seu comentário</label><textarea id="commentMessage" name="message" minlength="3" maxlength="2000" required></textarea></div><div class="comment-trap" aria-hidden="true"><label for="commentWebsite">Não preencha este campo</label><input id="commentWebsite" name="website" type="text" tabindex="-1" autocomplete="off"></div><input name="turnstileToken" type="hidden"><div class="turnstile-slot" aria-label="Verificação de segurança"></div><button class="comment-submit" type="submit">Enviar comentário</button><p class="comment-note">Seu nome e comentário poderão ser publicados nesta página.</p><p class="comment-status" role="status" aria-live="polite"></p>';
+      form.innerHTML = '<div class="comment-field"><label for="commentName">Seu nome</label><input id="commentName" name="name" type="text" minlength="2" maxlength="80" autocomplete="name" placeholder="Digite seu nome" required></div><div class="comment-field"><label for="commentMessage">Seu comentário</label><textarea id="commentMessage" name="message" minlength="3" maxlength="2000" placeholder="Escreva sua reflexão" required></textarea></div><div class="comment-trap" aria-hidden="true"><label for="commentWebsite">Não preencha este campo</label><input id="commentWebsite" name="website" type="text" tabindex="-1" autocomplete="off"></div><input name="turnstileToken" type="hidden"><div class="turnstile-slot" aria-label="Verificação de segurança"></div><button class="comment-submit" type="submit">Enviar comentário</button><p class="comment-note">Seu nome e comentário poderão ser publicados nesta página.</p><p class="comment-status" role="status" aria-live="polite"></p>';
+      const commentName = form.elements.name;
+      const commentMessage = form.elements.message;
+      commentName.addEventListener("input", () => {
+        commentName.value = commentName.value.replace(/[^A-Za-zÀ-ÖØ-öø-ÿ'’\s]/g, "").replace(/\s{2,}/g, " ").slice(0, 80);
+        commentName.setCustomValidity("");
+      });
+      commentMessage.addEventListener("input", () => commentMessage.setCustomValidity(""));
       const list = document.createElement("div"); list.className = "comment-list"; list.setAttribute("aria-live", "polite"); list.innerHTML = '<p class="comment-empty">Carregando comentários…</p>';
       form.addEventListener("submit", event => submitComment(event, postId, list));
       setupTurnstile(form);
