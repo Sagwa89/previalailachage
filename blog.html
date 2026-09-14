@@ -40,8 +40,16 @@
       --sans: Montserrat, "Century Gothic", Arial, sans-serif;
     }
     * { box-sizing: border-box; }
-    html { scroll-behavior: smooth; }
+    html { scroll-behavior: smooth; overflow-x: hidden; }
     body { margin: 0; background: var(--linen); color: var(--ink); font-family: var(--sans); font-size: 16px; line-height: 1.7; overflow-x: hidden; }
+    body.is-loading { overflow: hidden; }
+    .site-loader { position: fixed; z-index: 1000; inset: 0; display: grid; place-items: center; overflow: hidden; background: var(--wine); opacity: 1; visibility: visible; transition: opacity .55s ease, visibility .55s ease; }
+    .site-loader::before, .site-loader::after { content: ""; position: absolute; width: min(70vw, 34rem); aspect-ratio: 1; border: 1px solid rgba(201,162,75,.25); border-radius: 50%; }
+    .site-loader::after { width: min(46vw, 21rem); border-color: rgba(255,255,255,.12); }
+    .site-loader img { position: relative; z-index: 1; width: clamp(8rem, 28vw, 14rem); height: auto; object-fit: contain; filter: drop-shadow(0 0 2rem rgba(201,162,75,.2)); animation: loaderMonogram 1.2s ease-in-out infinite alternate; }
+    .site-loader.is-leaving { opacity: 0; visibility: hidden; pointer-events: none; }
+    .site-loader.is-leaving img { animation-play-state: paused; }
+    @keyframes loaderMonogram { from { opacity: .58; transform: scale(.92); } to { opacity: 1; transform: scale(1); } }
     a { color: inherit; }
     img { display: block; max-width: 100%; }
     ::selection { background: var(--gold); color: var(--wine); }
@@ -206,7 +214,11 @@
     }
   </style>
 </head>
-<body>
+<body class="is-loading">
+  <div class="site-loader" id="siteLoader" role="status" aria-label="Carregando Blog Laila Hage">
+    <img src="logoalt.webp" alt="" aria-hidden="true">
+  </div>
+  <noscript><style>.site-loader{display:none!important}body.is-loading{overflow:auto}</style></noscript>
   <header class="site-header">
     <a class="brand" href="index.html"><img src="logo.webp" alt="" aria-hidden="true" onerror="this.hidden=true">Laila&nbsp;<span>Hage</span></a>
     <nav class="site-nav" aria-label="Navegação principal">
@@ -255,6 +267,22 @@
     <section class="reader" id="leitura" aria-live="polite" aria-busy="false"></section>
   </main>
   <script>
+    const siteLoader = document.getElementById("siteLoader");
+    const loaderStartedAt = performance.now();
+    let loaderFinished = false;
+    function finishSiteLoader() {
+      if (loaderFinished) return;
+      loaderFinished = true;
+      siteLoader.classList.add("is-leaving");
+      document.body.classList.remove("is-loading");
+    }
+    function scheduleSiteLoader() {
+      const minimumVisibleTime = 850;
+      setTimeout(finishSiteLoader, Math.max(0, minimumVisibleTime - (performance.now() - loaderStartedAt)));
+    }
+    setTimeout(finishSiteLoader, 2400);
+    addEventListener("pageshow", event => { if (event.persisted) finishSiteLoader(); });
+
     const SUBSTACK_API_URL = "/api/substack";
     const COMMENTS_API_URL = "/api/comments";
     const PUBLIC_SITE_URL = "https://lailahage.com.br";
@@ -596,7 +624,7 @@
         }
       } finally { postsContainer.setAttribute("aria-busy", "false"); }
     }
-    loadPosts();
+    loadPosts().finally(scheduleSiteLoader);
   </script>
 </body>
 </html>

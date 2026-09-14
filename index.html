@@ -48,7 +48,7 @@
     }
 
     * { box-sizing: border-box; }
-    html { scroll-behavior: smooth; }
+    html { scroll-behavior: smooth; overflow-x: hidden; }
     body {
       margin: 0;
       background: var(--linen);
@@ -59,6 +59,22 @@
       line-height: 1.75;
       overflow-x: hidden;
     }
+    body.is-loading { overflow: hidden; }
+    .site-loader {
+      position: fixed; z-index: 1000; inset: 0; display: grid; place-items: center;
+      overflow: hidden; background: var(--wine); opacity: 1; visibility: visible;
+      transition: opacity .55s ease, visibility .55s ease;
+    }
+    .site-loader::before, .site-loader::after {
+      content: ""; position: absolute; width: min(70vw, 34rem); aspect-ratio: 1;
+      border: 1px solid rgba(201,162,75,.25); border-radius: 50%;
+    }
+    .site-loader::after { width: min(46vw, 21rem); border-color: rgba(255,255,255,.12); }
+    .site-loader img { position: relative; z-index: 1; width: clamp(8rem, 28vw, 14rem); height: auto; object-fit: contain; filter: drop-shadow(0 0 2rem rgba(201,162,75,.2)); animation: loaderMonogram 1.2s ease-in-out infinite alternate; }
+    .site-loader.is-leaving { opacity: 0; visibility: hidden; pointer-events: none; }
+    .site-loader.is-leaving img { animation-play-state: paused; }
+    .site-loader.is-entering { opacity: 1; visibility: visible; pointer-events: all; }
+    @keyframes loaderMonogram { from { opacity: .58; transform: scale(.92); } to { opacity: 1; transform: scale(1); } }
     a { color: inherit; }
     button, a { -webkit-tap-highlight-color: transparent; }
     ::selection { background: var(--gold); color: var(--wine); }
@@ -476,7 +492,11 @@
     }
   </style>
 </head>
-<body>
+<body class="is-loading">
+  <div class="site-loader" id="siteLoader" role="status" aria-label="Carregando Laila Hage">
+    <img src="logoalt.webp" alt="" aria-hidden="true">
+  </div>
+  <noscript><style>.site-loader{display:none!important}body.is-loading{overflow:auto}</style></noscript>
   <a class="skip-link" href="#conteudo">Ir para o conteúdo</a>
   <div class="scroll-line" aria-hidden="true"></div>
   <div class="lumen-light" id="lumenLight" role="status" aria-live="polite" aria-atomic="true">
@@ -878,6 +898,38 @@
   </main>
 
   <script>
+    const siteLoader = document.getElementById('siteLoader');
+    const loaderStartedAt = performance.now();
+    let loaderFinished = false;
+    function finishSiteLoader() {
+      if (loaderFinished) return;
+      loaderFinished = true;
+      siteLoader.classList.remove('is-entering');
+      siteLoader.classList.add('is-leaving');
+      document.body.classList.remove('is-loading');
+    }
+    function scheduleSiteLoader() {
+      const minimumVisibleTime = 850;
+      setTimeout(finishSiteLoader, Math.max(0, minimumVisibleTime - (performance.now() - loaderStartedAt)));
+    }
+    if (document.readyState === 'complete') scheduleSiteLoader();
+    else addEventListener('load', scheduleSiteLoader, { once: true });
+    setTimeout(finishSiteLoader, 2400);
+    addEventListener('pageshow', (event) => { if (event.persisted) finishSiteLoader(); });
+
+    document.querySelectorAll('a[href="blog.html"]').forEach((link) => {
+      link.addEventListener('click', (event) => {
+        if (event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+        event.preventDefault();
+        loaderFinished = false;
+        siteLoader.classList.remove('is-leaving');
+        void siteLoader.offsetWidth;
+        siteLoader.classList.add('is-entering');
+        document.body.classList.add('is-loading');
+        setTimeout(() => { window.location.href = link.href; }, 650);
+      });
+    });
+
     const menuButton = document.querySelector('.menu-toggle');
     const navigation = document.querySelector('.nav');
     menuButton.addEventListener('click', () => {
