@@ -86,7 +86,7 @@
       text-transform: uppercase; text-decoration: none;
     }
     .hero-brand span { color: var(--gold); }
-    .hero-brand img { width: clamp(2.2rem, 5vw, 2.8rem); height: clamp(2.2rem, 5vw, 2.8rem); margin-right: .7rem; object-fit: contain; flex: 0 0 auto; }
+    .hero-brand img { width: clamp(3.65rem, 8vw, 4.45rem); height: clamp(3.65rem, 8vw, 4.45rem); margin-right: .45rem; object-fit: contain; flex: 0 0 auto; }
     .nav {
       position: absolute; top: 100%; right: 1rem; display: none; flex-direction: column; align-items: stretch; gap: 0;
       width: min(360px, calc(100vw - 2rem));
@@ -216,7 +216,7 @@
     .question-label { display: block; color: var(--crimson); font-size: .7rem; letter-spacing: .2em; text-transform: uppercase; }
     .reflection-heading h2 { margin: .8rem 0 0; font-family: var(--display); font-size: clamp(2.6rem, 7vw, 5.4rem); font-weight: 400; line-height: .95; letter-spacing: -.045em; }
     .question-deck { width: 100%; margin: 0; }
-    .question-card { position: sticky; top: 0; z-index: 1; min-height: 100svh; margin: 0; padding: clamp(2rem, 7vw, 5rem) max(1.25rem, calc((100vw - 1180px)/2)); display: flex; flex-direction: column; justify-content: space-between; overflow: hidden; border: 0; box-shadow: 0 -20px 55px rgba(38,23,16,.18); transform-origin: center top; }
+    .question-card { position: sticky; top: 0; z-index: 1; min-height: 100svh; margin: 0; padding: clamp(2rem, 7vw, 5rem) max(1.25rem, calc((100vw - 1180px)/2)); display: flex; flex-direction: column; justify-content: center; overflow: hidden; border: 0; box-shadow: 0 -20px 55px rgba(38,23,16,.18); transform-origin: center top; }
     .question-card::after { content: "?"; position: absolute; right: clamp(.5rem, 4vw, 2rem); bottom: clamp(-2rem, -3vw, -.5rem); color: rgba(255,255,255,.08); font-family: var(--display); font-size: clamp(12rem, 38vw, 24rem); line-height: .75; pointer-events: none; }
     .question-card:nth-child(1) { background: var(--wine); color: var(--white); }
     .question-card:nth-child(2) { background: var(--crimson); color: var(--white); }
@@ -226,8 +226,7 @@
     .question-card:nth-child(3) { z-index: 3; }
     .question-card:nth-child(4) { z-index: 4; }
     .question-card:nth-child(4)::after { color: rgba(84,11,14,.08); }
-    .question-number { position: relative; z-index: 1; font-size: .7rem; letter-spacing: .18em; text-transform: uppercase; opacity: .72; }
-    .question-card p { position: relative; z-index: 1; max-width: 760px; margin: 3rem 0 0; font-family: var(--display); font-size: clamp(2.5rem, 7vw, 5.8rem); line-height: .98; letter-spacing: -.045em; text-wrap: balance; }
+    .question-card p { position: relative; z-index: 1; max-width: 760px; margin: 0; font-family: var(--display); font-size: clamp(2.5rem, 7vw, 5.8rem); line-height: .98; letter-spacing: -.045em; text-wrap: balance; }
 
     .new-book { position: relative; isolation: isolate; overflow: hidden; background: var(--wine); color: var(--white); }
     .new-book::before { content: ""; position: absolute; z-index: -1; width: min(72vw, 820px); aspect-ratio: 1; top: 8%; right: -24%; border: 1px solid rgba(201,162,75,.22); border-radius: 50%; box-shadow: 0 0 0 4rem rgba(201,162,75,.025), 0 0 0 9rem rgba(255,255,255,.018); }
@@ -298,7 +297,7 @@
     .institute-card { padding: clamp(1.6rem, 4vw, 3rem); background: var(--linen); border: 1px solid var(--line); overflow: hidden; transition: transform .35s ease, box-shadow .35s ease, border-color .35s ease; }
     .institute-card:hover { transform: translateY(-7px); border-color: rgba(201,162,75,.7); box-shadow: 0 24px 55px rgba(74,44,31,.11); }
     .institute-card.person { padding: 0; }
-    .institute-person-photo { position: relative; width: min(72%, 13.5rem); aspect-ratio: 1; margin: 1.5rem auto 0; overflow: hidden; border: 2px solid var(--gold); border-radius: 50%; background: var(--coffee); box-shadow: 0 14px 32px rgba(74,44,31,.16); }
+    .institute-person-photo { position: relative; width: min(86%, 17rem); aspect-ratio: 1; margin: 1.5rem auto 0; overflow: hidden; border: 2px solid var(--gold); border-radius: 50%; background: var(--coffee); box-shadow: 0 14px 32px rgba(74,44,31,.16); }
     .institute-person-photo::after { content: ""; position: absolute; inset: 0; border-radius: inherit; background: radial-gradient(circle at 50% 35%, transparent 45%, rgba(38,23,16,.22)); pointer-events: none; }
     .institute-person-photo img { width: 100%; height: 100%; object-fit: cover; object-position: center top; filter: saturate(.86) contrast(1.06) brightness(.95); transition: transform .5s ease; }
     .institute-card:hover .institute-person-photo img { transform: scale(1.025); }
@@ -622,19 +621,15 @@
       </div>
       <div class="question-deck">
         <article class="question-card" data-reveal>
-          <span class="question-number">Pergunta 01 de 04</span>
           <p>Você já se sentiu desamparada por quem devia te proteger?</p>
         </article>
         <article class="question-card" data-reveal>
-          <span class="question-number">Pergunta 02 de 04</span>
           <p>Já teve medo de não ser ouvida quando pediu ajuda?</p>
         </article>
         <article class="question-card" data-reveal>
-          <span class="question-number">Pergunta 03 de 04</span>
           <p>Já sentiu que o processo prolongava a violência?</p>
         </article>
         <article class="question-card" data-reveal>
-          <span class="question-number">Pergunta 04 de 04</span>
           <p>Já precisou provar uma dor que deveria ter sido acolhida?</p>
         </article>
       </div>
