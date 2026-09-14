@@ -163,8 +163,10 @@
     .comment-share-label { width: 100%; color: var(--muted); font-size: .68rem; font-weight: 700; letter-spacing: .09em; text-transform: uppercase; }
     .comment-share a { display: inline-flex; align-items: center; min-height: 2rem; padding: .4rem .65rem; border: 1px solid rgba(84, 11, 14, .24); color: var(--wine); font-size: .68rem; font-weight: 700; letter-spacing: .04em; text-decoration: none; transition: background .2s ease, color .2s ease, border-color .2s ease; }
     .comment-share a:hover, .comment-share a:focus-visible { border-color: var(--wine); background: var(--wine); color: #fff; }
-    .comment-report { margin-top: .8rem; padding: 0; border: 0; background: transparent; color: var(--muted); font: 700 .68rem/1 var(--sans); letter-spacing: .05em; text-decoration: underline; text-underline-offset: .2rem; cursor: pointer; }
-    .comment-report:disabled { cursor: default; text-decoration: none; }
+    .comment-like { display: inline-flex; align-items: center; gap: .42rem; min-height: 2.2rem; margin-top: .85rem; padding: .42rem .72rem; border: 1px solid rgba(84, 11, 14, .24); background: transparent; color: var(--wine); font: 700 .72rem/1 var(--sans); cursor: pointer; transition: background .2s ease, color .2s ease, border-color .2s ease; }
+    .comment-like:hover, .comment-like:focus-visible, .comment-like[aria-pressed="true"] { border-color: var(--wine); background: var(--wine); color: #fff; }
+    .comment-like:disabled { cursor: wait; opacity: .7; }
+    .comment-like-icon { font-size: 1.1rem; line-height: 1; }
     .turnstile-slot { min-height: 1px; }
     .comment-trap { position: absolute !important; left: -10000px !important; width: 1px !important; height: 1px !important; overflow: hidden !important; }
     body.reading .masthead, body.reading .topics, body.reading .journal { display: none; }
@@ -402,18 +404,31 @@
         link.append(createSocialIcon(label), document.createTextNode(label));
         share.append(link);
       });
-      const report = document.createElement("button"); report.className = "comment-report"; report.type = "button"; report.textContent = "Denunciar comentário";
-      report.addEventListener("click", async () => {
-        report.disabled = true; report.textContent = "Enviando denúncia…";
+      const like = document.createElement("button"); like.className = "comment-like"; like.type = "button";
+      const likeIcon = document.createElement("span"); likeIcon.className = "comment-like-icon"; likeIcon.setAttribute("aria-hidden", "true");
+      const likeText = document.createElement("span");
+      function updateLike(liked, count) {
+        const total = Math.max(0, Number(count) || 0);
+        like.setAttribute("aria-pressed", liked ? "true" : "false");
+        like.setAttribute("aria-label", `${liked ? "Remover curtida" : "Curtir comentário"}. ${total} ${total === 1 ? "curtida" : "curtidas"}`);
+        likeIcon.textContent = liked ? "♥" : "♡";
+        likeText.textContent = total ? String(total) : "Curtir";
+      }
+      updateLike(Boolean(comment.liked), comment.like_count);
+      like.addEventListener("click", async () => {
+        like.disabled = true;
         try {
-          const response = await fetch(COMMENTS_API_URL, { method: "POST", headers: { "Content-Type": "application/json", Accept: "application/json" }, body: JSON.stringify({ action: "report", commentId: comment.id }) });
-          if (!response.ok) throw new Error();
-          report.textContent = "Denúncia recebida";
+          const response = await fetch(COMMENTS_API_URL, { method: "POST", headers: { "Content-Type": "application/json", Accept: "application/json" }, body: JSON.stringify({ action: "like", commentId: comment.id }) });
+          const data = await response.json().catch(() => ({}));
+          if (!response.ok) throw new Error(data.error || "Não foi possível curtir");
+          updateLike(Boolean(data.liked), data.likeCount);
         } catch (error) {
-          report.disabled = false; report.textContent = "Tentar denunciar novamente";
+          like.setAttribute("title", error.message || "Não foi possível curtir agora");
+        } finally {
+          like.disabled = false;
         }
       });
-      item.append(author); if (date.textContent) item.append(date); item.append(message, share); if (comment.id) item.append(report); return item;
+      item.append(author); if (date.textContent) item.append(date); item.append(message, like, share); return item;
     }
     let turnstileLoader;
     function loadTurnstileScript() {
