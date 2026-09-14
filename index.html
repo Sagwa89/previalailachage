@@ -210,6 +210,22 @@
     .book-copy .button { margin-top: 1.2rem; }
     .microcopy { display: block; margin-top: 1rem; color: rgba(255,255,255,.48); font-size: .76rem; }
 
+    .reflection-questions { position: relative; min-height: min(72svh, 700px); display: grid; place-items: center; padding: clamp(5rem, 10vw, 9rem) max(1.5rem, calc((100vw - 1180px)/2)); overflow: hidden; isolation: isolate; background: var(--coffee); color: var(--white); text-align: center; }
+    .reflection-questions::before { content: "?"; position: absolute; z-index: -1; left: 50%; top: 50%; color: rgba(255,255,255,.035); font-family: var(--display); font-size: min(72vw, 42rem); line-height: .7; transform: translate(-50%, -48%); }
+    .reflection-orbit { position: absolute; z-index: -1; width: min(78vw, 38rem); aspect-ratio: 1; border: 1px solid rgba(201,162,75,.22); border-radius: 50%; }
+    .reflection-orbit::before, .reflection-orbit::after { content: ""; position: absolute; border: 1px solid rgba(255,255,255,.08); border-radius: 50%; }
+    .reflection-orbit::before { inset: 9%; }
+    .reflection-orbit::after { inset: 23%; }
+    .reflection-questions.visible .reflection-orbit { animation: questionOrbit 18s linear infinite; }
+    .reflection-inner { width: min(100%, 900px); }
+    .question-label { display: block; margin-bottom: 2rem; color: var(--gold); font-size: .7rem; letter-spacing: .2em; text-transform: uppercase; }
+    .question-text { min-height: 3.2em; margin: 0; font-family: var(--display); font-size: clamp(2.35rem, 7vw, 5.6rem); line-height: .98; letter-spacing: -.04em; text-wrap: balance; transition: opacity .55s ease, transform .55s ease; }
+    .question-text.is-changing { opacity: 0; transform: translateY(1rem); }
+    .question-index { display: block; margin-top: 2rem; color: rgba(255,250,244,.5); font-size: .68rem; letter-spacing: .16em; }
+    .question-progress { width: min(13rem, 55vw); height: 1px; margin: 1rem auto 0; overflow: hidden; background: rgba(255,255,255,.15); }
+    .question-progress span { display: block; width: 100%; height: 100%; background: var(--gold); transform-origin: left; }
+    .reflection-questions.visible .question-progress span { animation: questionProgress 5s linear infinite; }
+
     .new-book { position: relative; isolation: isolate; overflow: hidden; background: var(--wine); color: var(--white); }
     .new-book::before { content: ""; position: absolute; z-index: -1; width: min(72vw, 820px); aspect-ratio: 1; top: 8%; right: -24%; border: 1px solid rgba(201,162,75,.22); border-radius: 50%; box-shadow: 0 0 0 4rem rgba(201,162,75,.025), 0 0 0 9rem rgba(255,255,255,.018); }
     .new-book::after { content: ""; position: absolute; z-index: -1; inset: 0; background: linear-gradient(115deg, transparent 48%, rgba(255,255,255,.025) 48%, rgba(255,255,255,.025) 48.2%, transparent 48.2%); pointer-events: none; }
@@ -231,20 +247,25 @@
     .manuscript-signal.visible .manuscript-pages span:nth-child(3) { animation: manuscriptBreath 3.6s ease-in-out infinite; }
     .new-book-grid { display: grid; grid-template-columns: 1fr; gap: clamp(2rem, 6vw, 5rem); align-items: start; }
     .new-book-copy h2 { margin-bottom: 2rem; font-family: var(--display); font-size: clamp(2.8rem, 6vw, 5.7rem); font-weight: 400; line-height: .95; letter-spacing: -.04em; }
-    .prologue-excerpt { position: relative; margin: 0; padding: clamp(1.6rem, 4vw, 3rem); border-left: 3px solid var(--gold); background: rgba(255,255,255,.055); overflow: hidden; }
-    .prologue-excerpt::after { content: ""; position: absolute; inset: 0 auto 0 -35%; width: 22%; background: linear-gradient(90deg, transparent, rgba(255,255,255,.07), transparent); transform: skewX(-16deg); animation: excerptLight 7s ease-in-out infinite; pointer-events: none; }
+    .prologue-excerpt { position: relative; margin: 0; padding: clamp(1.6rem, 4vw, 3rem); border: 1px solid rgba(201,162,75,.25); background: rgba(255,255,255,.055); overflow: hidden; }
+    .prologue-border { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+    .prologue-border rect { fill: none; stroke: var(--gold); stroke-width: 1.3; vector-effect: non-scaling-stroke; stroke-dasharray: 16 84; animation: prologueTrace 7s linear infinite; }
+    .prologue-highlight { color: #f3d98e; font-style: italic; text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: .22em; }
     .prologue-excerpt p { margin-bottom: 1.15rem; color: rgba(255,250,244,.84); font-family: var(--display); font-size: clamp(1.35rem, 3vw, 2.15rem); line-height: 1.35; }
     .prologue-excerpt p:last-of-type { margin-bottom: 0; }
     .prologue-excerpt cite { display: block; margin-top: 1.8rem; color: var(--gold); font-family: var(--sans); font-size: .75rem; font-style: normal; letter-spacing: .16em; text-transform: uppercase; }
     .new-book-copy > .button { margin-top: 2rem; }
     .new-book-closing { max-width: 980px; margin: clamp(3rem, 7vw, 6rem) 0 0; font-family: var(--display); font-size: clamp(2rem, 4vw, 3.6rem); line-height: 1.05; }
-    .prologue-panel { padding: clamp(1.6rem, 4vw, 3rem); background: var(--linen); color: var(--coffee); border-top: 5px solid var(--gold); text-align: center; }
+    .new-book-closing[data-reveal] { opacity: 0; filter: blur(7px); transform: translateY(2.5rem); transition: opacity 2.4s ease, transform 2.4s cubic-bezier(.2,.7,.2,1), filter 2.4s ease; }
+    .new-book-closing[data-reveal].visible { opacity: 1; filter: blur(0); transform: none; }
+    .prologue-panel { width: 100%; min-width: 0; align-self: start; padding: clamp(1.6rem, 4vw, 3rem); background: var(--linen); color: var(--coffee); border-top: 5px solid var(--gold); text-align: center; }
     .prologue-panel h3 { margin: 0 0 1rem; font-family: var(--display); font-size: clamp(2.5rem, 5vw, 4rem); font-weight: 400; line-height: 1; }
     .prologue-panel > p { max-width: 670px; margin-left: auto; margin-right: auto; color: #5f4b40; }
-    .prologue-form { max-width: 720px; margin: 2rem auto 0; text-align: left; }
-    .form-grid { display: grid; grid-template-columns: 1fr; gap: 1rem; }
-    .field label { display: block; margin-bottom: .4rem; color: var(--wine); font-size: .75rem; letter-spacing: .12em; text-transform: uppercase; }
-    .field input { width: 100%; min-height: 3.5rem; padding: .8rem 1rem; border: 1px solid rgba(74,44,31,.28); background: var(--white); color: var(--ink); font: inherit; }
+    .prologue-form { width: 100%; max-width: 720px; margin: 2rem auto 0; text-align: left; }
+    .form-grid { width: 100%; display: grid; grid-template-columns: minmax(0, 1fr); gap: 1rem; align-items: end; }
+    .field { min-width: 0; display: grid; grid-template-rows: auto 3.5rem; align-content: end; }
+    .field label { display: block; margin: 0 0 .4rem; color: var(--wine); font-size: .75rem; line-height: 1.35; letter-spacing: .1em; text-transform: uppercase; }
+    .field input { display: block; width: 100%; height: 3.5rem; min-width: 0; margin: 0; padding: .8rem 1rem; border: 1px solid rgba(74,44,31,.28); border-radius: 0; appearance: none; background: var(--white); color: var(--ink); font: inherit; }
     .field input:focus { outline: 2px solid var(--gold); outline-offset: 2px; }
     .consent { display: flex; gap: .7rem; margin: 1.2rem 0; align-items: flex-start; color: #5f4b40; font-size: .82rem; line-height: 1.5; }
     .consent input { margin-top: .25rem; accent-color: var(--wine); }
@@ -267,37 +288,45 @@
     .institute-logo::after { content: "✦"; position: absolute; right: -.25rem; top: 12%; width: 2.5rem; height: 2.5rem; display: grid; place-items: center; border-radius: 50%; background: var(--wine); color: var(--gold); font-size: 1rem; box-shadow: 0 8px 24px rgba(84,11,14,.2); }
     .institute-intro.visible .institute-logo::before { animation: instituteOrbit 9s linear infinite; }
     .institute-logo img { position: absolute; inset: 0; width: 100%; height: 100%; padding: 1rem; object-fit: contain; border-radius: 50%; background: var(--linen); }
-    .institute-intro .section-title { margin-bottom: 0; }
+    .institute-intro .section-title { max-width: 680px; margin-bottom: 0; font-size: clamp(2.8rem, 5.2vw, 5.3rem); line-height: .92; letter-spacing: -.055em; }
     .institute-lede { max-width: 650px; margin: 0; color: #5f4b40; font-size: 1.08rem; }
-    .institute-grid { display: grid; grid-template-columns: 1fr; gap: 1rem; margin-top: 3.5rem; }
+    .institute-grid { width: min(100%, 1040px); display: grid; grid-template-columns: 1fr; gap: 1rem; margin: 3.5rem auto 0; }
     .institute-card { padding: clamp(1.6rem, 4vw, 3rem); background: var(--linen); border: 1px solid var(--line); overflow: hidden; transition: transform .35s ease, box-shadow .35s ease, border-color .35s ease; }
     .institute-card:hover { transform: translateY(-7px); border-color: rgba(201,162,75,.7); box-shadow: 0 24px 55px rgba(74,44,31,.11); }
     .institute-card.person { padding: 0; }
-    .institute-person-photo { position: relative; width: min(72%, 15rem); aspect-ratio: 1; margin: 2rem auto 0; overflow: hidden; border: 2px solid var(--gold); border-radius: 50%; background: var(--coffee); box-shadow: 0 18px 40px rgba(74,44,31,.18); }
+    .institute-person-photo { position: relative; width: min(58%, 10.5rem); aspect-ratio: 1; margin: 1.5rem auto 0; overflow: hidden; border: 2px solid var(--gold); border-radius: 50%; background: var(--coffee); box-shadow: 0 14px 32px rgba(74,44,31,.16); }
     .institute-person-photo::after { content: ""; position: absolute; inset: 0; border-radius: inherit; background: radial-gradient(circle at 50% 35%, transparent 45%, rgba(38,23,16,.22)); pointer-events: none; }
     .institute-person-photo img { width: 100%; height: 100%; object-fit: cover; object-position: center top; filter: saturate(.86) contrast(1.06) brightness(.95); transition: transform .5s ease; }
     .institute-card:hover .institute-person-photo img { transform: scale(1.025); }
-    .institute-card-copy { padding: clamp(1.5rem, 4vw, 2.5rem); }
+    .institute-card-copy { padding: clamp(1.25rem, 3vw, 1.8rem); }
     .institute-card span { color: var(--crimson); font-size: .75rem; letter-spacing: .16em; text-transform: uppercase; }
-    .institute-card h3 { margin: 1.2rem 0 .8rem; font-family: var(--display); font-size: 2rem; font-weight: 400; }
+    .institute-card h3 { margin: .85rem 0 .65rem; font-family: var(--display); font-size: 1.8rem; font-weight: 400; }
     .institute-card p { margin: 0; color: var(--muted); }
     .institute-social { margin-top: 2rem; }
-    .discipline-icon { width: 3.4rem; height: 3.4rem; margin-bottom: 1.3rem; display: grid; place-items: center; border: 1px solid rgba(201,162,75,.8); border-radius: 50%; background: var(--white); color: var(--wine); box-shadow: 0 10px 25px rgba(74,44,31,.08); }
-    .discipline-icon svg { width: 1.75rem; height: 1.75rem; fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+    .discipline-icon { width: 3rem; height: 3rem; margin-bottom: 1rem; display: grid; place-items: center; border: 1px solid rgba(201,162,75,.8); border-radius: 50%; background: var(--white); color: var(--wine); box-shadow: 0 10px 25px rgba(74,44,31,.08); }
+    .discipline-icon svg { width: 1.5rem; height: 1.5rem; fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
     .institute-card.visible .discipline-icon { animation: iconFloat 4s ease-in-out infinite; }
 
-    .lumen-toast { position: fixed; z-index: 100; left: 50%; bottom: max(1rem, env(safe-area-inset-bottom)); width: min(calc(100vw - 2rem), 430px); padding: 1rem 1.15rem; display: flex; align-items: center; gap: .9rem; border: 1px solid rgba(201,162,75,.7); background: rgba(84,11,14,.97); color: var(--white); box-shadow: 0 22px 65px rgba(38,23,16,.38); opacity: 0; visibility: hidden; transform: translate(-50%, 1.5rem) scale(.96); transition: opacity .35s ease, transform .35s ease, visibility .35s; pointer-events: none; }
-    .lumen-toast.is-visible { opacity: 1; visibility: visible; transform: translate(-50%, 0) scale(1); }
-    .lumen-toast-mark { position: relative; width: 2.9rem; height: 2.9rem; flex: 0 0 auto; display: grid; place-items: center; border: 1px solid var(--gold); border-radius: 50%; color: var(--gold); }
-    .lumen-toast.is-visible .lumen-toast-mark { animation: lumenGlow 1.15s ease-out 2; }
-    .lumen-toast strong { display: block; color: var(--gold); font-family: var(--display); font-size: 1.2rem; font-weight: 400; }
-    .lumen-toast small { display: block; margin-top: .2rem; color: rgba(255,250,244,.74); line-height: 1.4; }
+    .lumen-light { position: fixed; z-index: 100; inset: 0; display: grid; place-items: center; overflow: hidden; opacity: 0; visibility: hidden; background: radial-gradient(circle at center, rgba(255,242,193,.2), rgba(84,11,14,.48) 34%, rgba(38,23,16,.82) 78%); color: var(--white); pointer-events: none; }
+    .lumen-light.is-visible { visibility: visible; animation: lumenScene 5.6s ease-in-out both; }
+    .lumen-light-core { position: relative; width: clamp(7rem, 24vw, 13rem); aspect-ratio: 1; display: grid; place-items: center; border-radius: 50%; background: radial-gradient(circle, #fff 0 7%, #f5df9b 18%, rgba(201,162,75,.45) 42%, transparent 70%); filter: drop-shadow(0 0 2rem rgba(255,235,164,.75)); transform: scale(.15); }
+    .lumen-light.is-visible .lumen-light-core { animation: lumenCore 5.6s cubic-bezier(.2,.75,.2,1) both; }
+    .lumen-light-core::before, .lumen-light-core::after { content: ""; position: absolute; inset: -42%; border: 1px solid rgba(255,244,201,.42); border-radius: 50%; }
+    .lumen-light-core::after { inset: -85%; border-color: rgba(255,244,201,.18); }
+    .lumen-light-copy { position: absolute; top: calc(50% + clamp(5.5rem, 16vw, 9rem)); width: min(86vw, 620px); text-align: center; opacity: 0; transform: translateY(1rem); }
+    .lumen-light.is-visible .lumen-light-copy { animation: lumenWords 5.6s ease-in-out both; }
+    .lumen-light-copy strong { display: block; color: #f3d98e; font-family: var(--display); font-size: clamp(1.8rem, 5vw, 3.4rem); font-weight: 400; }
+    .lumen-light-copy small { display: block; margin-top: .5rem; color: rgba(255,250,244,.74); font-size: .76rem; letter-spacing: .12em; text-transform: uppercase; }
 
     @keyframes manuscriptBreath { 0%, 100% { transform: translateY(0) rotate(0); } 50% { transform: translateY(-5px) rotate(1deg); } }
-    @keyframes excerptLight { 0%, 55% { left: -35%; } 80%, 100% { left: 125%; } }
+    @keyframes prologueTrace { to { stroke-dashoffset: -100; } }
     @keyframes instituteOrbit { to { transform: rotate(360deg); } }
     @keyframes iconFloat { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
-    @keyframes lumenGlow { 0% { box-shadow: 0 0 0 0 rgba(201,162,75,.48); } 100% { box-shadow: 0 0 0 1rem rgba(201,162,75,0); } }
+    @keyframes questionOrbit { to { transform: rotate(360deg); } }
+    @keyframes questionProgress { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+    @keyframes lumenScene { 0% { opacity: 0; } 14%, 76% { opacity: 1; } 100% { opacity: 0; } }
+    @keyframes lumenCore { 0% { transform: scale(.12); opacity: 0; } 18% { opacity: 1; } 48% { transform: scale(1); } 72% { transform: scale(.9); opacity: 1; } 100% { transform: scale(1.35); opacity: 0; } }
+    @keyframes lumenWords { 0%, 18% { opacity: 0; transform: translateY(1rem); } 34%, 74% { opacity: 1; transform: none; } 100% { opacity: 0; transform: translateY(-.6rem); } }
 
     .media-section { position: relative; isolation: isolate; overflow: hidden; background: var(--coffee); color: var(--white); }
     .media-section::before { content: ""; position: absolute; inset: 0; z-index: -1; background: rgba(38,23,16,.15); }
@@ -399,8 +428,9 @@
       .book-grid { grid-template-columns: .85fr 1.15fr; }
       .book-stage { min-height: 610px; }
       .new-book-grid { grid-template-columns: minmax(0, 1.18fr) minmax(340px, .82fr); }
-      .institute-intro { grid-template-columns: 1.05fr .95fr; }
-      .institute-heading { grid-template-columns: auto 1fr; justify-items: start; text-align: left; align-items: center; }
+      .institute-intro { grid-template-columns: 1fr; }
+      .institute-intro > div:last-child { width: min(100%, 650px); justify-self: end; }
+      .institute-heading { grid-template-columns: auto minmax(0, 1fr); justify-items: start; text-align: left; align-items: center; }
       .institute-grid { grid-template-columns: repeat(3, 1fr); }
       .podcast-grid { grid-template-columns: repeat(3, 1fr); align-items: start; }
       .podcast-card.audio { grid-column: auto; }
@@ -428,15 +458,17 @@
       *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
       [data-reveal] { opacity: 1; transform: none; }
       .cinematic-video { display: none; }
+      .question-progress span { animation: none !important; transform: scaleX(1); }
+      .prologue-border rect { animation: none !important; stroke-dasharray: none; }
     }
   </style>
 </head>
 <body>
   <a class="skip-link" href="#conteudo">Ir para o conteúdo</a>
   <div class="scroll-line" aria-hidden="true"></div>
-  <div class="lumen-toast" id="lumenToast" role="status" aria-live="polite" aria-atomic="true">
-    <span class="lumen-toast-mark" aria-hidden="true">✦</span>
-    <span><strong>O Lumen está a caminho.</strong><small>Que esta luz acompanhe sua leitura.</small></span>
+  <div class="lumen-light" id="lumenLight" role="status" aria-live="polite" aria-atomic="true">
+    <span class="lumen-light-core" aria-hidden="true"></span>
+    <span class="lumen-light-copy"><strong>Lumen</strong><small>Que esta luz acompanhe sua leitura</small></span>
   </div>
 
   <header class="site-header">
@@ -569,6 +601,16 @@
       </div>
     </section>
 
+    <section class="reflection-questions" id="perguntas" data-reveal aria-label="Perguntas para reflexão">
+      <div class="reflection-orbit" aria-hidden="true"></div>
+      <div class="reflection-inner">
+        <span class="question-label">Talvez esta história também fale com você</span>
+        <p class="question-text" id="questionText">Você já se sentiu desamparada por quem devia te proteger?</p>
+        <span class="question-index" id="questionIndex">01 / 04</span>
+        <div class="question-progress" aria-hidden="true"><span id="questionProgress"></span></div>
+      </div>
+    </section>
+
     <section class="section new-book" id="novo-livro">
       <div class="new-book-head" data-reveal>
         <p class="section-kicker">02 · Novo livro em desenvolvimento</p>
@@ -584,7 +626,8 @@
           <p class="free-label">O Tribunal debate a teoria, o papel aceita tudo.</p>
           <h2>A realidade, no entanto, cobra em <em>sangue.</em></h2>
           <blockquote class="prologue-excerpt">
-            <p>Atravessei os corredores do Tribunal de Justiça da Bahia com o olho roxo.</p>
+            <svg class="prologue-border" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><rect x=".5" y=".5" width="99" height="99" pathLength="100"/></svg>
+            <p>Atravessei os corredores do Tribunal de Justiça da Bahia com o <span class="prologue-highlight">olho roxo.</span></p>
             <p>Tinha tentado de tudo. Camadas grossas de corretivo, um curativo posicionado para esconder o estrago. Mas a marca era nua, impossível de camuflar.</p>
             <p>E eu, naquele corredor, não era uma vítima qualquer entrando para denunciar: eu era quem escrevia as decisões daquele Tribunal.</p>
             <p>Sabia tudo sobre aquele sistema, menos como fazer aquele sistema enxergar o roxo no rosto de quem o operava.</p>
@@ -814,15 +857,20 @@
       menuButton.setAttribute('aria-expanded', 'false');
     }));
 
-    const lumenToast = document.getElementById('lumenToast');
-    let lumenToastTimer;
+    const lumenLight = document.getElementById('lumenLight');
+    let lumenLightTimer;
+    let lumenNavigationTimer;
     document.querySelectorAll('[data-lumen-download]').forEach((link) => {
-      link.addEventListener('click', () => {
-        clearTimeout(lumenToastTimer);
-        lumenToast.classList.remove('is-visible');
+      link.addEventListener('click', (event) => {
+        event.preventDefault();
+        const destination = link.href;
+        clearTimeout(lumenLightTimer);
+        clearTimeout(lumenNavigationTimer);
+        lumenLight.classList.remove('is-visible');
         requestAnimationFrame(() => {
-          lumenToast.classList.add('is-visible');
-          lumenToastTimer = setTimeout(() => lumenToast.classList.remove('is-visible'), 3400);
+          lumenLight.classList.add('is-visible');
+          lumenLightTimer = setTimeout(() => lumenLight.classList.remove('is-visible'), 5700);
+          lumenNavigationTimer = setTimeout(() => window.location.assign(destination), 5750);
         });
       });
     });
@@ -853,6 +901,41 @@
     document.querySelectorAll('[data-reveal]').forEach((element) => observer.observe(element));
 
     const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const questions = [
+      'Você já se sentiu desamparada por quem devia te proteger?',
+      'Já teve medo de não ser ouvida quando pediu ajuda?',
+      'Já sentiu que o processo prolongava a violência?',
+      'Já precisou provar uma dor que deveria ter sido acolhida?'
+    ];
+    const questionSection = document.querySelector('.reflection-questions');
+    const questionText = document.getElementById('questionText');
+    const questionIndex = document.getElementById('questionIndex');
+    const questionProgress = document.getElementById('questionProgress');
+    let activeQuestion = 0;
+    let questionTimer = null;
+    function advanceQuestion() {
+      questionText.classList.add('is-changing');
+      setTimeout(() => {
+        activeQuestion = (activeQuestion + 1) % questions.length;
+        questionText.textContent = questions[activeQuestion];
+        questionIndex.textContent = `${String(activeQuestion + 1).padStart(2, '0')} / ${String(questions.length).padStart(2, '0')}`;
+        questionProgress.style.animation = 'none';
+        void questionProgress.offsetWidth;
+        questionProgress.style.animation = '';
+        questionText.classList.remove('is-changing');
+      }, 520);
+    }
+    if (!reducedMotion) {
+      const questionObserver = new IntersectionObserver((entries) => {
+        const visible = entries.some((entry) => entry.isIntersecting);
+        if (visible && !questionTimer) questionTimer = setInterval(advanceQuestion, 5000);
+        if (!visible && questionTimer) {
+          clearInterval(questionTimer);
+          questionTimer = null;
+        }
+      }, { threshold: .25 });
+      questionObserver.observe(questionSection);
+    }
     const connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
     const reducedData = Boolean(connection && (connection.saveData || connection.effectiveType === 'slow-2g' || connection.effectiveType === '2g'));
     if (!reducedMotion && !reducedData) {
