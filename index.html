@@ -82,7 +82,7 @@
     .hero-brand {
       position: absolute; top: 0; left: 1rem; z-index: 21; height: var(--header-height);
       display: flex; align-items: center; white-space: nowrap; color: var(--white);
-      font-family: var(--display); font-size: clamp(1.2rem, 5vw, 1.45rem); letter-spacing: .1em;
+      font-family: var(--display); font-size: clamp(1.32rem, 5vw, 1.6rem); letter-spacing: .08em;
       text-transform: uppercase; text-decoration: none;
     }
     .hero-brand span { color: var(--gold); }
@@ -93,7 +93,7 @@
       color: var(--wine);
     }
     .nav.open { display: flex; }
-    .nav a { padding: 1rem; font-size: .8rem; letter-spacing: .12em; text-transform: uppercase; text-decoration: none; }
+    .nav a { padding: 1rem; font-size: .9rem; letter-spacing: .1em; text-transform: uppercase; text-decoration: none; }
     .nav a:hover, .nav a:focus-visible { color: var(--crimson); }
     .nav .nav-cta { border: 1px solid var(--wine); padding: .7rem 1rem; color: var(--wine); }
     .menu-toggle {
@@ -294,7 +294,7 @@
     .institute-card { padding: clamp(1.6rem, 4vw, 3rem); background: var(--linen); border: 1px solid var(--line); overflow: hidden; transition: transform .35s ease, box-shadow .35s ease, border-color .35s ease; }
     .institute-card:hover { transform: translateY(-7px); border-color: rgba(201,162,75,.7); box-shadow: 0 24px 55px rgba(74,44,31,.11); }
     .institute-card.person { padding: 0; }
-    .institute-person-photo { position: relative; width: min(58%, 10.5rem); aspect-ratio: 1; margin: 1.5rem auto 0; overflow: hidden; border: 2px solid var(--gold); border-radius: 50%; background: var(--coffee); box-shadow: 0 14px 32px rgba(74,44,31,.16); }
+    .institute-person-photo { position: relative; width: min(72%, 13.5rem); aspect-ratio: 1; margin: 1.5rem auto 0; overflow: hidden; border: 2px solid var(--gold); border-radius: 50%; background: var(--coffee); box-shadow: 0 14px 32px rgba(74,44,31,.16); }
     .institute-person-photo::after { content: ""; position: absolute; inset: 0; border-radius: inherit; background: radial-gradient(circle at 50% 35%, transparent 45%, rgba(38,23,16,.22)); pointer-events: none; }
     .institute-person-photo img { width: 100%; height: 100%; object-fit: cover; object-position: center top; filter: saturate(.86) contrast(1.06) brightness(.95); transition: transform .5s ease; }
     .institute-card:hover .institute-person-photo img { transform: scale(1.025); }
@@ -302,7 +302,7 @@
     .institute-card span { color: var(--crimson); font-size: .75rem; letter-spacing: .16em; text-transform: uppercase; }
     .institute-card h3 { margin: .85rem 0 .65rem; font-family: var(--display); font-size: 1.8rem; font-weight: 400; }
     .institute-card p { margin: 0; color: var(--muted); }
-    .institute-social { margin-top: 2rem; }
+    .institute-social { margin: 0; }
     .discipline-icon { width: 3rem; height: 3rem; margin-bottom: 1rem; display: grid; place-items: center; border: 1px solid rgba(201,162,75,.8); border-radius: 50%; background: var(--white); color: var(--wine); box-shadow: 0 10px 25px rgba(74,44,31,.08); }
     .discipline-icon svg { width: 1.5rem; height: 1.5rem; fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
     .institute-card.visible .discipline-icon { animation: iconFloat 4s ease-in-out infinite; }
@@ -311,6 +311,7 @@
     .institute-program-card span { color: var(--gold); font-size: .75rem; letter-spacing: .16em; text-transform: uppercase; }
     .institute-program-card h3 { margin: .45rem 0 .35rem; font-family: var(--display); font-size: clamp(1.8rem, 4vw, 2.6rem); font-weight: 400; }
     .institute-program-card p { margin: 0; color: rgba(255,250,244,.72); }
+    .institute-end { display: flex; justify-content: center; margin-top: clamp(2rem, 5vw, 3.5rem); }
 
     .lumen-light { position: fixed; z-index: 100; inset: 0; display: grid; place-items: center; overflow: hidden; opacity: 0; visibility: hidden; background: radial-gradient(circle at center, rgba(255,242,193,.2), rgba(84,11,14,.48) 34%, rgba(38,23,16,.82) 78%); color: var(--white); pointer-events: none; }
     .lumen-light.is-visible { visibility: visible; animation: lumenScene 5.6s ease-in-out both; }
@@ -459,7 +460,7 @@
         gap: clamp(.5rem, .7vw, .85rem); width: 100%; min-width: 0;
         background: transparent; padding: 0; border: 0;
       }
-      .nav a { flex: 0 0 auto; padding: 0; white-space: nowrap; font-size: clamp(.62rem, .55vw, .7rem); letter-spacing: .08em; }
+      .nav a { flex: 0 0 auto; padding: 0; white-space: nowrap; font-size: clamp(.75rem, .58vw, .84rem); letter-spacing: .055em; }
       .nav .nav-cta { padding: .6rem .72rem; }
     }
     @media (prefers-reduced-motion: reduce) {
@@ -713,24 +714,6 @@
         </div>
         <div>
           <p class="institute-lede">Um encontro entre experiência jurídica e psicologia do trauma para promover informação, cuidado, palestras e formações sobre a proteção de mulheres e crianças.</p>
-          <a class="button institute-social" href="https://www.instagram.com/institutolumenaliwen/" target="_blank" rel="noreferrer">
-            <svg class="instagram-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-              <defs>
-                <linearGradient id="instagramInstituteGradient" x1="0" y1="1" x2="1" y2="0">
-                  <stop offset="0" stop-color="#ffdc80"/>
-                  <stop offset=".32" stop-color="#fcaf45"/>
-                  <stop offset=".58" stop-color="#f77737"/>
-                  <stop offset=".78" stop-color="#c13584"/>
-                  <stop offset="1" stop-color="#5851db"/>
-                </linearGradient>
-              </defs>
-              <rect x="1.5" y="1.5" width="21" height="21" rx="6" fill="url(#instagramInstituteGradient)"/>
-              <rect x="6.2" y="6.2" width="11.6" height="11.6" rx="3.7" fill="none" stroke="#fff" stroke-width="1.8"/>
-              <circle cx="12" cy="12" r="2.8" fill="none" stroke="#fff" stroke-width="1.8"/>
-              <circle cx="16.3" cy="7.8" r="1" fill="#fff"/>
-            </svg>
-            <span>Instagram do Instituto</span>
-          </a>
         </div>
       </div>
       <div class="institute-grid">
@@ -767,6 +750,26 @@
           <p>Encontros para profissionais, instituições e pessoas comprometidas com saúde mental, direitos e proteção efetiva.</p>
         </div>
       </article>
+      <div class="institute-end" data-reveal>
+        <a class="button institute-social" href="https://www.instagram.com/institutolumenaliwen/" target="_blank" rel="noreferrer">
+          <svg class="instagram-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <defs>
+              <linearGradient id="instagramInstituteGradient" x1="0" y1="1" x2="1" y2="0">
+                <stop offset="0" stop-color="#ffdc80"/>
+                <stop offset=".32" stop-color="#fcaf45"/>
+                <stop offset=".58" stop-color="#f77737"/>
+                <stop offset=".78" stop-color="#c13584"/>
+                <stop offset="1" stop-color="#5851db"/>
+              </linearGradient>
+            </defs>
+            <rect x="1.5" y="1.5" width="21" height="21" rx="6" fill="url(#instagramInstituteGradient)"/>
+            <rect x="6.2" y="6.2" width="11.6" height="11.6" rx="3.7" fill="none" stroke="#fff" stroke-width="1.8"/>
+            <circle cx="12" cy="12" r="2.8" fill="none" stroke="#fff" stroke-width="1.8"/>
+            <circle cx="16.3" cy="7.8" r="1" fill="#fff"/>
+          </svg>
+          <span>Acompanhar o Instituto no Instagram</span>
+        </a>
+      </div>
     </section>
 
     <section class="section media-section" id="conversa">
