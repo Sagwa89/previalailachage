@@ -1,6 +1,7 @@
 const crypto = require("crypto");
 const TABLE_NAME = "blog_comments";
 const REPORTS_TABLE = "blog_comment_reports";
+const LIKES_TABLE = "blog_comment_likes";
 
 function send(response, status, payload) {
   response.setHeader("Content-Type", "application/json; charset=utf-8");
@@ -78,7 +79,7 @@ module.exports = async function handler(request, response) {
     if (!validPostId(postId)) return send(response, 400, { error: "Texto inválido" });
 
     try {
-      const query = `${TABLE_NAME}?select=id,author_name,body,created_at&post_id=eq.${encodeURIComponent(postId)}&status=eq.approved&order=created_at.asc&limit=100`;
+      const query = `${TABLE_NAME}?select=id,author_name,body,created_at,like_count&post_id=eq.${encodeURIComponent(postId)}&status=eq.approved&order=created_at.asc&limit=100`;
       const result = await supabaseRequest(config, query, { method: "GET" });
       if (!result.ok) {
         const error = new Error(`Supabase ${result.status}`);
@@ -86,7 +87,17 @@ module.exports = async function handler(request, response) {
         throw error;
       }
       const comments = await result.json();
-      return send(response, 200, { comments });
+      const ids = Array.isArray(comments) ? comments.map(comment => Number(comment.id)).filter(Number.isSafeInteger) : [];
+      let likedIds = new Set();
+      if (ids.length) {
+        const hash = visitorHash(request, config);
+        const likesQuery = `${LIKES_TABLE}?select=comment_id&visitor_hash=eq.${hash}&comment_id=in.(${ids.join(",")})`;
+        const likesResult = await supabaseRequest(config, likesQuery, { method: "GET" });
+        if (!likesResult.ok) throw new Error(`Supabase ${likesResult.status}`);
+        const likes = await likesResult.json();
+        likedIds = new Set((Array.isArray(likes) ? likes : []).map(like => Number(like.comment_id)));
+      }
+      return send(response, 200, { comments: comments.map(comment => ({ ...comment, like_count: Number(comment.like_count) || 0, liked: likedIds.has(Number(comment.id)) })) });
     } catch (error) {
       console.error("Falha ao carregar comentários", error);
       return send(response, 502, { error: "Não foi possível carregar os comentários", upstreamStatus: error.upstreamStatus || null });
@@ -108,6 +119,25 @@ module.exports = async function handler(request, response) {
     const hash = visitorHash(request, config);
 
     if (website) return send(response, 202, { received: true });
+
+    if (action === "like") {
+      const commentId = Number(body.commentId);
+      if (!Number.isSafeInteger(commentId) || commentId < 1) return send(response, 400, { error: "Comentário inválido" });
+      try {
+        const result = await supabaseRequest(config, "rpc/toggle_blog_comment_like", {
+          method: "POST",
+          headers: { Prefer: "return=representation" },
+          body: JSON.stringify({ p_comment_id: commentId, p_visitor_hash: hash })
+        });
+        if (!result.ok) throw new Error(`Supabase ${result.status}`);
+        const rows = await result.json();
+        const state = Array.isArray(rows) ? rows[0] : rows;
+        return send(response, 200, { liked: Boolean(state?.liked), likeCount: Number(state?.like_count) || 0 });
+      } catch (error) {
+        console.error("Falha ao registrar curtida", error);
+        return send(response, 502, { error: "Não foi possível registrar a curtida" });
+      }
+    }
 
     if (action === "report") {
       const commentId = Number(body.commentId);

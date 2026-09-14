@@ -43,23 +43,14 @@ function parseFeed(xml) {
   return items.slice(0, 12).map((item) => {
     const content = tag(item, "content:encoded") || tag(item, "description");
     const link = tag(item, "link") || tag(item, "guid");
-    let slug = "";
-    try {
-      const segments = new URL(link).pathname.split("/").filter(Boolean);
-      slug = segments.at(-1) || "";
-    } catch (error) {
-      slug = "";
-    }
     const plainText = stripHtml(content);
     return {
       title: stripHtml(tag(item, "title")) || "Novo texto",
       date: tag(item, "pubDate"),
       link,
-      slug,
       category: stripHtml(tag(item, "category")) || "Reflexão",
       excerpt: plainText.slice(0, 260),
-      image: imageFrom(content, item),
-      content
+      image: imageFrom(content, item)
     };
   }).filter((post) => post.link);
 }
