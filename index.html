@@ -26,7 +26,7 @@
   <meta name="twitter:description" content="Conheça a história de Laila Hage e baixe gratuitamente o livro Lumen.">
   <meta name="twitter:image" content="https://lailahage.com.br/ogimage.png">
   <meta name="twitter:image:alt" content="Laila Hage, mulher, mãe, cristã e servidora pública">
-  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%23540b0e'/%3E%3Cpath d='M19 13v38h27v-8H28V13z' fill='%23c9a24b'/%3E%3C/svg%3E">
+  <link rel="icon" href="favicon.ico" sizes="any">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="preload" as="image" href="lailachage.webp" type="image/webp" fetchpriority="high">
@@ -86,6 +86,7 @@
       text-transform: uppercase; text-decoration: none;
     }
     .hero-brand span { color: var(--gold); }
+    .hero-brand img { width: clamp(2.2rem, 5vw, 2.8rem); height: clamp(2.2rem, 5vw, 2.8rem); margin-right: .7rem; object-fit: contain; flex: 0 0 auto; }
     .nav {
       position: absolute; top: 100%; right: 1rem; display: none; flex-direction: column; align-items: stretch; gap: 0;
       width: min(360px, calc(100vw - 2rem));
@@ -210,17 +211,20 @@
     .book-copy .button { margin-top: 1.2rem; }
     .microcopy { display: block; margin-top: 1rem; color: rgba(255,255,255,.48); font-size: .76rem; }
 
-    .reflection-questions { position: relative; padding: clamp(4.5rem, 9vw, 8rem) max(1.25rem, calc((100vw - 1180px)/2)) 18svh; isolation: isolate; background: var(--linen); color: var(--coffee); }
-    .reflection-heading { position: relative; z-index: 5; max-width: 760px; margin: 0 auto clamp(2rem, 5vw, 4rem); text-align: center; }
+    .reflection-questions { position: relative; padding: clamp(4.5rem, 9vw, 8rem) 0 0; isolation: isolate; background: var(--linen); color: var(--coffee); }
+    .reflection-heading { position: relative; z-index: 5; max-width: 760px; margin: 0 auto clamp(3rem, 7vw, 5rem); padding: 0 1.25rem; text-align: center; }
     .question-label { display: block; color: var(--crimson); font-size: .7rem; letter-spacing: .2em; text-transform: uppercase; }
     .reflection-heading h2 { margin: .8rem 0 0; font-family: var(--display); font-size: clamp(2.6rem, 7vw, 5.4rem); font-weight: 400; line-height: .95; letter-spacing: -.045em; }
-    .question-deck { width: min(100%, 920px); margin: 0 auto; }
-    .question-card { position: sticky; top: clamp(5.4rem, 11vh, 7rem); min-height: clamp(24rem, 66svh, 37rem); margin-bottom: 16svh; padding: clamp(1.6rem, 6vw, 4.5rem); display: flex; flex-direction: column; justify-content: space-between; overflow: hidden; border: 1px solid rgba(255,255,255,.22); box-shadow: 0 28px 70px rgba(38,23,16,.2); transform-origin: center top; }
+    .question-deck { width: 100%; margin: 0; }
+    .question-card { position: sticky; top: 0; z-index: 1; min-height: 100svh; margin: 0; padding: clamp(2rem, 7vw, 5rem) max(1.25rem, calc((100vw - 1180px)/2)); display: flex; flex-direction: column; justify-content: space-between; overflow: hidden; border: 0; box-shadow: 0 -20px 55px rgba(38,23,16,.18); transform-origin: center top; }
     .question-card::after { content: "?"; position: absolute; right: clamp(.5rem, 4vw, 2rem); bottom: clamp(-2rem, -3vw, -.5rem); color: rgba(255,255,255,.08); font-family: var(--display); font-size: clamp(12rem, 38vw, 24rem); line-height: .75; pointer-events: none; }
     .question-card:nth-child(1) { background: var(--wine); color: var(--white); }
     .question-card:nth-child(2) { background: var(--crimson); color: var(--white); }
     .question-card:nth-child(3) { background: var(--coffee); color: var(--white); }
     .question-card:nth-child(4) { background: var(--gold); color: var(--wine); border-color: rgba(84,11,14,.18); }
+    .question-card:nth-child(2) { z-index: 2; }
+    .question-card:nth-child(3) { z-index: 3; }
+    .question-card:nth-child(4) { z-index: 4; }
     .question-card:nth-child(4)::after { color: rgba(84,11,14,.08); }
     .question-number { position: relative; z-index: 1; font-size: .7rem; letter-spacing: .18em; text-transform: uppercase; opacity: .72; }
     .question-card p { position: relative; z-index: 1; max-width: 760px; margin: 3rem 0 0; font-family: var(--display); font-size: clamp(2.5rem, 7vw, 5.8rem); line-height: .98; letter-spacing: -.045em; text-wrap: balance; }
@@ -495,7 +499,7 @@
 
   <main id="conteudo">
     <section class="hero" id="topo">
-      <a class="hero-brand" href="#topo" aria-label="Laila Hage, início">Laila <span>&nbsp;Hage</span></a>
+      <a class="hero-brand" href="#topo" aria-label="Laila Hage, início"><img src="logoalt.webp" alt="" aria-hidden="true" onerror="this.hidden=true">Laila <span>&nbsp;Hage</span></a>
       <div class="hero-copy">
         <p class="eyebrow">Uma história de fé e recomeço</p>
         <h1>A luz que a <em>escuridão</em> não apaga.</h1>
@@ -614,7 +618,7 @@
     <section class="reflection-questions" id="perguntas" aria-label="Perguntas para reflexão">
       <div class="reflection-heading" data-reveal>
         <span class="question-label">Talvez esta história também fale com você</span>
-        <h2>Continue descendo.<br>Cada pergunta abre uma porta.</h2>
+        <h2>Você se reconhece nesta história?</h2>
       </div>
       <div class="question-deck">
         <article class="question-card" data-reveal>

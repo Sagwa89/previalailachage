@@ -46,8 +46,9 @@
     img { display: block; max-width: 100%; }
     ::selection { background: var(--gold); color: var(--wine); }
     .site-header { position: sticky; top: 0; z-index: 20; min-height: 4.5rem; display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: .8rem max(1.2rem, calc((100vw - 1180px) / 2)); background: rgba(255, 250, 244, .96); border-bottom: 1px solid var(--line); color: var(--wine); backdrop-filter: blur(12px); }
-    .brand { font-family: var(--display); font-size: clamp(1.3rem, 4vw, 1.75rem); line-height: 1; letter-spacing: .06em; text-decoration: none; text-transform: uppercase; white-space: nowrap; }
+    .brand { display: inline-flex; align-items: center; font-family: var(--display); font-size: clamp(1.3rem, 4vw, 1.75rem); line-height: 1; letter-spacing: .06em; text-decoration: none; text-transform: uppercase; white-space: nowrap; }
     .brand span { color: var(--gold); }
+    .brand img { width: clamp(2.2rem, 5vw, 2.7rem); height: clamp(2.2rem, 5vw, 2.7rem); margin-right: .65rem; object-fit: contain; flex: 0 0 auto; }
     .site-nav { display: none; align-items: center; gap: clamp(1rem, 2vw, 2rem); }
     .site-nav a { font-size: .7rem; letter-spacing: .12em; text-decoration: none; text-transform: uppercase; white-space: nowrap; }
     .site-nav a:hover, .site-nav a:focus-visible { color: var(--crimson); }
@@ -207,7 +208,7 @@
 </head>
 <body>
   <header class="site-header">
-    <a class="brand" href="index.html">Laila <span>Hage</span></a>
+    <a class="brand" href="index.html"><img src="logo.webp" alt="" aria-hidden="true" onerror="this.hidden=true">Laila&nbsp;<span>Hage</span></a>
     <nav class="site-nav" aria-label="Navegação principal">
       <a href="index.html#historia">História</a>
       <a href="index.html#lumen">Lumen</a>
