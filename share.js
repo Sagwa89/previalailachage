@@ -1,4 +1,4 @@
-const FEED_URL = "https://jliahendler.substack.com/feed";
+const FEED_URL = String(process.env.SUBSTACK_FEED_URL || "https://lailahage.substack.com/feed").trim();
 const SITE_URL = "https://lailahage.com.br";
 
 function decodeXml(value = "") {
