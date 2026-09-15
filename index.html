@@ -718,7 +718,6 @@
             </label>
             <div class="prologue-turnstile" id="prologueTurnstile" aria-label="Verificação de segurança"></div>
             <button class="button" type="submit">Quero ler o Prólogo</button>
-            <small class="privacy-note">Seus dados servem só para enviar o prólogo e avisar do lançamento. Nada além disso.</small>
             <p class="form-status" id="formStatus" role="status" aria-live="polite"></p>
           </form>
         </aside>
@@ -1169,6 +1168,22 @@
         const data = await response.json().catch(() => ({}));
         if (!response.ok) throw new Error(data.error || 'Falha no cadastro');
         if (!data.downloadUrl) throw new Error('O arquivo ainda não está disponível para download');
+        const emailForm = new FormData();
+        emailForm.append('Nome', payload.name);
+        emailForm.append('Email', payload.email);
+        emailForm.append('WhatsApp', payload.phone);
+        emailForm.append('Consentimento', 'Autorizou receber o prólogo, novidades, publicações, eventos, palestras e informações sobre o lançamento');
+        emailForm.append('_replyto', payload.email);
+        emailForm.append('_subject', `Novo cadastro para o prólogo | ${payload.name}`);
+        emailForm.append('_template', 'table');
+        emailForm.append('_captcha', 'false');
+        emailForm.append('_url', 'https://lailahage.com.br/#novo-livro');
+        const emailResponse = await fetch('https://formsubmit.co/ajax/lailachage@gmail.com', {
+          method: 'POST',
+          headers: { Accept: 'application/json' },
+          body: emailForm
+        });
+        if (!emailResponse.ok) throw new Error('Não foi possível enviar o cadastro agora');
         prologueForm.reset();
         prologueTurnstileToken = '';
         if (window.turnstile && prologueTurnstileId !== null) window.turnstile.reset(prologueTurnstileId);
