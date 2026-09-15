@@ -191,13 +191,29 @@
     .comment-like-icon { font-size: 1.1rem; line-height: 1; }
     .turnstile-slot { min-height: 1px; }
     .comment-trap { position: absolute !important; left: -10000px !important; width: 1px !important; height: 1px !important; overflow: hidden !important; }
-    body.reading .masthead, body.reading .topics, body.reading .journal { display: none; }
+    .social-destinations { padding: clamp(4rem, 8vw, 7rem) max(1.2rem, calc((100vw - 1180px) / 2)); background: var(--wine); color: var(--paper); }
+    .social-destinations-head { max-width: 760px; margin-bottom: clamp(2rem, 5vw, 3.5rem); }
+    .social-destinations-label { margin: 0 0 1rem; color: var(--gold); font-size: .72rem; letter-spacing: .18em; text-transform: uppercase; }
+    .social-destinations h2 { margin: 0; font-family: var(--display); font-size: clamp(2.8rem, 9vw, 5.8rem); font-weight: 400; letter-spacing: -.04em; line-height: .94; }
+    .social-destinations h2 em { color: var(--gold); font-weight: 400; }
+    .social-destinations-grid { display: grid; gap: 1rem; }
+    .destination-card { min-width: 0; display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 1rem; padding: clamp(1.2rem, 4vw, 2rem); border: 1px solid rgba(255,250,244,.3); color: var(--paper); text-decoration: none; transition: transform .25s ease, border-color .25s ease, background .25s ease; }
+    .destination-card:hover, .destination-card:focus-visible { transform: translateY(-4px); border-color: var(--gold); background: rgba(255,250,244,.07); }
+    .destination-icon { width: clamp(3rem, 10vw, 4.3rem); aspect-ratio: 1; display: grid; place-items: center; border: 1px solid rgba(201,162,75,.62); border-radius: 50%; color: var(--gold); }
+    .destination-icon svg { width: 52%; height: 52%; fill: currentColor; }
+    .destination-icon.instagram svg { width: 58%; height: 58%; }
+    .destination-copy small { display: block; margin-bottom: .35rem; color: rgba(255,250,244,.58); font-size: .65rem; letter-spacing: .14em; text-transform: uppercase; }
+    .destination-copy strong { display: block; font-family: var(--display); font-size: clamp(1.5rem, 5vw, 2.2rem); font-weight: 400; line-height: 1; overflow-wrap: anywhere; }
+    .destination-arrow { color: var(--gold); font-size: 1.5rem; transition: transform .25s ease; }
+    .destination-card:hover .destination-arrow, .destination-card:focus-visible .destination-arrow { transform: translate(3px, -3px); }
+    body.reading .masthead, body.reading .topics, body.reading .journal, body.reading .social-destinations { display: none; }
     @media (min-width: 700px) {
       .site-nav { display: flex; }
       .back { display: none; }
       .journal-head { grid-template-columns: minmax(0, 1fr) minmax(280px, .65fr); }
       .journal-head .section-label { grid-column: 1 / -1; }
       .posts { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .social-destinations-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
     }
     @media (min-width: 920px) {
       .masthead-grid { grid-template-columns: minmax(0, 1.08fr) minmax(380px, .92fr); }
@@ -270,6 +286,28 @@
       </div>
       <div class="posts" id="conteudo-do-blog" aria-live="polite" aria-busy="true">
         <p class="status">Preparando os textos…</p>
+      </div>
+    </section>
+    <section class="social-destinations" aria-labelledby="socialDestinationsTitle">
+      <div class="social-destinations-head">
+        <p class="social-destinations-label">Continue por perto</p>
+        <h2 id="socialDestinationsTitle">Acompanhe novas palavras e <em>reflexões.</em></h2>
+      </div>
+      <div class="social-destinations-grid">
+        <a class="destination-card" href="https://lailahage.substack.com/" target="_blank" rel="noopener noreferrer" aria-label="Acompanhar Laila Hage no Substack">
+          <span class="destination-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><path d="M3 4h18v2.6H3V4Zm0 4.3h18v2.6H3V8.3Zm2 4.3h14V21l-7-4.1L5 21v-8.4Z"/></svg>
+          </span>
+          <span class="destination-copy"><small>Textos e publicações</small><strong>Substack</strong></span>
+          <span class="destination-arrow" aria-hidden="true">↗</span>
+        </a>
+        <a class="destination-card" href="https://www.instagram.com/lailahage/" target="_blank" rel="noopener noreferrer" aria-label="Acompanhar Laila Hage no Instagram">
+          <span class="destination-icon instagram" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><defs><linearGradient id="instagramDestinationGradient" x1="2" y1="22" x2="22" y2="2"><stop stop-color="#ffd600"/><stop offset=".35" stop-color="#ff7a00"/><stop offset=".68" stop-color="#d300c5"/><stop offset="1" stop-color="#7638fa"/></linearGradient></defs><rect x="3" y="3" width="18" height="18" rx="5" fill="none" stroke="url(#instagramDestinationGradient)" stroke-width="2"/><circle cx="12" cy="12" r="4" fill="none" stroke="url(#instagramDestinationGradient)" stroke-width="2"/><circle cx="17.4" cy="6.8" r="1.1" fill="url(#instagramDestinationGradient)"/></svg>
+          </span>
+          <span class="destination-copy"><small>Bastidores e atualizações</small><strong>Instagram</strong></span>
+          <span class="destination-arrow" aria-hidden="true">↗</span>
+        </a>
       </div>
     </section>
     <section class="reader" id="leitura" aria-live="polite" aria-busy="false"></section>
