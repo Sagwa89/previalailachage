@@ -1,4 +1,4 @@
-const FEED_URL = String(process.env.SUBSTACK_FEED_URL || "https://lailahage.substack.com/feed").trim();
+const FEED_URL = "https://lailahage.substack.com/feed";
 
 function decodeXml(value = "") {
   return value
@@ -40,26 +40,18 @@ function imageFrom(content, item) {
 
 function parseFeed(xml) {
   const items = xml.match(/<item\b[\s\S]*?<\/item>/gi) || [];
-  return items.slice(0, 12).map((item) => {
+  return items.map((item) => {
     const content = tag(item, "content:encoded") || tag(item, "description");
     const link = tag(item, "link") || tag(item, "guid");
-    let slug = "";
-    try {
-      const segments = new URL(link).pathname.split("/").filter(Boolean);
-      slug = segments.at(-1) || "";
-    } catch (error) {
-      slug = "";
-    }
     const plainText = stripHtml(content);
     return {
       title: stripHtml(tag(item, "title")) || "Novo texto",
       date: tag(item, "pubDate"),
       link,
-      slug,
       category: stripHtml(tag(item, "category")) || "Reflexão",
       excerpt: plainText.slice(0, 260),
-      image: imageFrom(content, item),
-      content
+      content,
+      image: imageFrom(content, item)
     };
   }).filter((post) => post.link);
 }
