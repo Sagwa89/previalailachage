@@ -1,4 +1,4 @@
-const FEED_URL = "https://jliahendler.substack.com/feed";
+const FEED_URL = "https://lailahage.substack.com/feed";
 
 function decodeXml(value = "") {
   return value
@@ -40,7 +40,7 @@ function imageFrom(content, item) {
 
 function parseFeed(xml) {
   const items = xml.match(/<item\b[\s\S]*?<\/item>/gi) || [];
-  return items.slice(0, 12).map((item) => {
+  return items.map((item) => {
     const content = tag(item, "content:encoded") || tag(item, "description");
     const link = tag(item, "link") || tag(item, "guid");
     const plainText = stripHtml(content);
@@ -50,6 +50,7 @@ function parseFeed(xml) {
       link,
       category: stripHtml(tag(item, "category")) || "Reflexão",
       excerpt: plainText.slice(0, 260),
+      content,
       image: imageFrom(content, item)
     };
   }).filter((post) => post.link);

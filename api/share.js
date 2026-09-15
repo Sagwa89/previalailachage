@@ -1,5 +1,5 @@
-const FEED_URL = "https://jliahendler.substack.com/feed";
-const SITE_URL = "https://previalailachage.vercel.app";
+const FEED_URL = "https://lailahage.substack.com/feed";
+const SITE_URL = "https://lailahage.com.br";
 
 function decodeXml(value = "") {
   return value

@@ -7,7 +7,7 @@ function send(response, status, payload) {
 function getConfig() {
   return {
     lailaEmail: String(process.env.LAILA_CONTACT_EMAIL || "lailachage@gmail.com").trim(),
-    prologueUrl: String(process.env.PROLOGUE_URL || "").trim(),
+    prologueUrl: String(process.env.PROLOGUE_URL || "/QUANDO%20A%20PROTE%C3%87%C3%83O%20FERE%20-%20Prologo.pdf").trim(),
     turnstileSiteKey: String(process.env.TURNSTILE_SITE_KEY || "").trim(),
     turnstileSecretKey: String(process.env.TURNSTILE_SECRET_KEY || "").trim()
   };
@@ -85,22 +85,27 @@ module.exports = async function handler(request, response) {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Accept: "application/json"
+        Accept: "application/json",
+        Origin: "https://lailahage.com.br",
+        Referer: "https://lailahage.com.br/"
       },
       body: JSON.stringify({
         Nome: name,
         Email: email,
         WhatsApp: phone,
         Consentimento: "Autorizou receber o prólogo, novidades, publicações, eventos, palestras e informações sobre o lançamento",
+        _replyto: email,
+        _url: "https://lailahage.com.br/#novo-livro",
         _subject: `Novo cadastro para o prólogo | ${name}`,
         _template: "table",
         _captcha: "false"
       })
     });
 
-    if (!emailResponse.ok) {
-      const detail = await emailResponse.text();
-      console.error("Falha no FormSubmit", emailResponse.status, detail.slice(0, 500));
+    const emailResult = await emailResponse.json().catch(() => null);
+    const rejected = emailResult && (emailResult.success === false || String(emailResult.success).toLowerCase() === "false");
+    if (!emailResponse.ok || rejected) {
+      console.error("Falha no FormSubmit", emailResponse.status, JSON.stringify(emailResult || {}).slice(0, 500));
       return send(response, 502, { error: "Não foi possível enviar o prólogo agora" });
     }
 
