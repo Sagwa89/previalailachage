@@ -704,7 +704,8 @@
     async function loadPosts() {
       postsContainer.setAttribute("aria-busy", "true");
       try {
-        const response = await fetch(SUBSTACK_API_URL, { headers: { Accept: "application/json" } });
+        const refreshKey = Math.floor(Date.now() / 60000);
+        const response = await fetch(`${SUBSTACK_API_URL}?refresh=${refreshKey}`, { cache: "no-store", headers: { Accept: "application/json" } });
         if (!response.ok) throw new Error("Fonte indisponível");
         const data = await response.json();
         const posts = Array.isArray(data.posts) ? data.posts : [];
