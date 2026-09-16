@@ -60,7 +60,9 @@ module.exports = async function handler(request, response) {
   if (!/^[a-z0-9][a-z0-9-]{0,159}$/.test(slug)) return response.status(404).send("Texto não encontrado");
 
   try {
-    const feedResponse = await fetch(FEED_URL, { headers: { Accept: "application/rss+xml, application/xml, text/xml", "User-Agent": "LailaHageShare/1.0" } });
+    const freshFeedUrl = new URL(FEED_URL);
+    freshFeedUrl.searchParams.set("refresh", String(Date.now()));
+    const feedResponse = await fetch(freshFeedUrl, { headers: { Accept: "application/rss+xml, application/xml, text/xml", "User-Agent": "LailaHageShare/1.0", "Cache-Control": "no-cache", Pragma: "no-cache" } });
     const xml = await feedResponse.text();
     const post = feedResponse.ok ? findPost(xml, slug) : null;
     if (!post) return response.status(404).send("Texto não encontrado");
@@ -72,7 +74,7 @@ module.exports = async function handler(request, response) {
     const description = escapeHtml(`Um convite à leitura: ${post.description}`);
 
     response.setHeader("Content-Type", "text/html; charset=utf-8");
-    response.setHeader("Cache-Control", "s-maxage=600, stale-while-revalidate=3600");
+    response.setHeader("Cache-Control", "s-maxage=60, stale-while-revalidate=120");
     return response.status(200).send(`<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${title} | Laila Hage</title><meta name="description" content="${description}"><link rel="canonical" href="${shareUrl}"><meta property="og:type" content="article"><meta property="og:locale" content="pt_BR"><meta property="og:site_name" content="Laila Hage"><meta property="og:title" content="${title}"><meta property="og:description" content="${description}"><meta property="og:url" content="${shareUrl}"><meta property="og:image" content="${escapeHtml(image)}"><meta property="og:image:alt" content="Imagem do artigo ${title}"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="${title}"><meta name="twitter:description" content="${description}"><meta name="twitter:image" content="${escapeHtml(image)}"><script>location.replace(${JSON.stringify(destination)})<\/script></head><body><p><a href="${destination}">Ler o texto de Laila Hage</a></p></body></html>`);
   } catch (error) {
     console.error("Falha ao preparar compartilhamento", error);

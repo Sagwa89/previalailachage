@@ -63,10 +63,14 @@ module.exports = async function handler(request, response) {
   }
 
   try {
-    const feedResponse = await fetch(FEED_URL, {
+    const freshFeedUrl = new URL(FEED_URL);
+    freshFeedUrl.searchParams.set("refresh", String(Date.now()));
+    const feedResponse = await fetch(freshFeedUrl, {
       headers: {
         Accept: "application/rss+xml, application/xml, text/xml",
-        "User-Agent": "LailaHageBlog/1.0"
+        "User-Agent": "LailaHageBlog/1.0",
+        "Cache-Control": "no-cache",
+        Pragma: "no-cache"
       },
       redirect: "follow"
     });
@@ -78,7 +82,7 @@ module.exports = async function handler(request, response) {
       return response.status(200).json({ posts: [], setupRequired: true });
     }
 
-    response.setHeader("Cache-Control", "s-maxage=600, stale-while-revalidate=3600");
+    response.setHeader("Cache-Control", "s-maxage=60, stale-while-revalidate=120");
     return response.status(200).json({ posts: parseFeed(xml), source: "substack" });
   } catch (error) {
     console.error("Falha ao consultar o Substack", error);
