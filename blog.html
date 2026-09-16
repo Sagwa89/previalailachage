@@ -102,6 +102,7 @@
     .status { margin: 0; padding: clamp(2rem, 6vw, 4rem); background: var(--paper); border-top: 3px solid var(--gold); color: var(--wine); font-family: var(--display); font-size: clamp(1.8rem, 5vw, 3rem); line-height: 1.1; text-align: center; }
     .post { min-width: 0; display: flex; flex-direction: column; background: var(--paper); border: 1px solid var(--line); transition: transform .25s ease, box-shadow .25s ease; }
     .post:hover { transform: translateY(-4px); box-shadow: 0 18px 42px rgba(74, 44, 31, .1); }
+    .post.no-image { border-top: 3px solid var(--gold); background: linear-gradient(145deg, var(--paper), var(--linen)); }
     .post-visual { position: relative; min-height: 240px; overflow: hidden; background: var(--wine); }
     .post-visual img { width: 100%; height: 100%; position: absolute; inset: 0; object-fit: cover; filter: saturate(.78) contrast(1.08) brightness(.88); transition: transform .5s ease; }
     .post:hover .post-visual img { transform: scale(1.025); }
@@ -221,9 +222,12 @@
       .masthead-portrait { min-height: 0; }
       .posts { gap: 2.4rem 1.8rem; }
       .post.featured { grid-column: 1 / -1; display: grid; grid-template-columns: minmax(0, 1.12fr) minmax(350px, .88fr); }
+      .post.featured.no-image { display: flex; }
       .post.featured .post-visual { min-height: 520px; }
       .post.featured .post-title { font-size: clamp(3rem, 5vw, 5rem); }
       .post.featured .post-body { padding: clamp(2rem, 4vw, 4rem); }
+      .post.featured.no-image .post-title { max-width: 900px; font-size: clamp(2.4rem, 4vw, 4rem); }
+      .post.featured.no-image .post-body { padding: clamp(1.75rem, 3.5vw, 3rem); }
       .article-content { font-size: 1.26rem; }
       .comments-layout { grid-template-columns: minmax(280px, .75fr) minmax(0, 1.25fr); align-items: start; }
     }
@@ -508,7 +512,7 @@
       return template.content;
     }
     function createPostCard(post, index) {
-      const article = document.createElement("article"); article.className = index === 0 ? "post featured" : "post";
+      const article = document.createElement("article"); article.className = `${index === 0 ? "post featured" : "post"}${post.image ? "" : " no-image"}`;
       const visual = document.createElement("div"); visual.className = post.image ? "post-visual" : "post-visual placeholder";
       if (post.image) { const image = document.createElement("img"); image.src = post.image; image.alt = ""; image.loading = index === 0 ? "eager" : "lazy"; image.decoding = "async"; visual.append(image); }
       const body = document.createElement("div"); body.className = "post-body";
@@ -522,7 +526,7 @@
       const actions = document.createElement("div"); actions.className = "post-actions";
       const readLink = document.createElement("a"); readLink.className = "read-link"; readLink.href = pageUrl; readLink.textContent = "Continuar leitura";
       const commentLink = document.createElement("a"); commentLink.className = "comment-link"; commentLink.href = `${pageUrl}#comentarios`; commentLink.textContent = "Participar da conversa";
-      actions.append(readLink, commentLink); body.append(meta, title, excerpt, actions); article.append(visual, body); return article;
+      actions.append(readLink, commentLink); body.append(meta, title, excerpt, actions); if (post.image) article.append(visual); article.append(body); return article;
     }
     function createCommentItem(comment) {
       const item = document.createElement("article"); item.className = "comment-item";
