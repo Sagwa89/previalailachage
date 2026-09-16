@@ -31,7 +31,7 @@ function stripHtml(value = "") {
 
 function imageFrom(content, item) {
   const image = content.match(/<img\b[^>]*\bsrc=["']([^"']+)["']/i);
-  return image ? decodeXml(image[1]) : attribute(item, "media:content", "url") || attribute(item, "enclosure", "url");
+  return image ? decodeXml(image[1]) : attribute(item, "media:content", "url");
 }
 
 function escapeHtml(value = "") {
