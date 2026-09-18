@@ -1,8 +1,7 @@
 (() => {
   "use strict";
 
-  // Substitua pelo identificador da propriedade GA4 da cliente, no formato G-XXXXXXXXXX.
-  const measurementId = "G-XXXXXXXXXX";
+  const measurementId = "G-TNC40ZKG7R";
   const isConfigured = /^G-[A-Z0-9]+$/i.test(measurementId) && !measurementId.includes("XXXXXXXXXX");
 
   window.trackSiteEvent = (eventName, parameters = {}) => {
