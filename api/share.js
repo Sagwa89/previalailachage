@@ -49,7 +49,8 @@ function findPost(xml, slug) {
     return {
       title: stripHtml(tag(item, "title")) || "Texto de Laila Hage",
       description: stripHtml(content).slice(0, 220) || "Leia esta reflexão de Laila Hage.",
-      image: imageFrom(content, item)
+      image: imageFrom(content, item),
+      publishedAt: tag(item, "pubDate")
     };
   }
   return null;
@@ -71,11 +72,36 @@ module.exports = async function handler(request, response) {
     const destination = `${SITE_URL}/blog.html?post=${encodeURIComponent(slug)}`;
     const image = /^https:\/\//i.test(post.image || "") ? post.image : `${SITE_URL}/ogimage.png`;
     const title = escapeHtml(post.title);
-    const description = escapeHtml(`Um convite à leitura: ${post.description}`);
+    const description = escapeHtml(post.description);
+    const publishedAt = post.publishedAt && !Number.isNaN(Date.parse(post.publishedAt))
+      ? new Date(post.publishedAt).toISOString()
+      : "";
+    const structuredData = JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "BlogPosting",
+      "headline": post.title,
+      "description": post.description,
+      "url": shareUrl,
+      "mainEntityOfPage": shareUrl,
+      ...(publishedAt ? { "datePublished": publishedAt, "dateModified": publishedAt } : {}),
+      "image": [image],
+      "author": {
+        "@type": "Person",
+        "name": "Laila Hage",
+        "url": `${SITE_URL}/`
+      },
+      "publisher": {
+        "@type": "Person",
+        "name": "Laila Hage",
+        "url": `${SITE_URL}/`
+      },
+      "inLanguage": "pt-BR"
+    }).replace(/</g, "\\u003c");
+    const publishedMeta = publishedAt ? `<meta property="article:published_time" content="${escapeHtml(publishedAt)}">` : "";
 
     response.setHeader("Content-Type", "text/html; charset=utf-8");
     response.setHeader("Cache-Control", "s-maxage=60, stale-while-revalidate=120");
-    return response.status(200).send(`<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${title} | Laila Hage</title><meta name="description" content="${description}"><link rel="canonical" href="${shareUrl}"><meta property="og:type" content="article"><meta property="og:locale" content="pt_BR"><meta property="og:site_name" content="Laila Hage"><meta property="og:title" content="${title}"><meta property="og:description" content="${description}"><meta property="og:url" content="${shareUrl}"><meta property="og:image" content="${escapeHtml(image)}"><meta property="og:image:alt" content="Imagem do artigo ${title}"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="${title}"><meta name="twitter:description" content="${description}"><meta name="twitter:image" content="${escapeHtml(image)}"><script>location.replace(${JSON.stringify(destination)})<\/script></head><body><p><a href="${destination}">Ler o texto de Laila Hage</a></p></body></html>`);
+    return response.status(200).send(`<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1"><title>${title} | Laila Hage</title><meta name="description" content="${description}"><link rel="canonical" href="${shareUrl}"><meta property="og:type" content="article"><meta property="og:locale" content="pt_BR"><meta property="og:site_name" content="Laila Hage"><meta property="og:title" content="${title}"><meta property="og:description" content="${description}"><meta property="og:url" content="${shareUrl}"><meta property="og:image" content="${escapeHtml(image)}"><meta property="og:image:alt" content="Imagem do artigo ${title}">${publishedMeta}<meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="${title}"><meta name="twitter:description" content="${description}"><meta name="twitter:image" content="${escapeHtml(image)}"><script type="application/ld+json">${structuredData}<\/script><script>location.replace(${JSON.stringify(destination)})<\/script></head><body><p><a href="${destination}">Ler o texto de Laila Hage</a></p></body></html>`);
   } catch (error) {
     console.error("Falha ao preparar compartilhamento", error);
     return response.redirect(302, `${SITE_URL}/blog.html`);
