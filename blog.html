@@ -378,6 +378,19 @@
     const postsContainer = document.querySelector("#conteudo-do-blog");
     const readerContainer = document.querySelector("#leitura");
     const requestedPost = new URLSearchParams(window.location.search).get("post");
+    function trackBlogEvent(eventName, parameters = {}) {
+      if (typeof window.trackSiteEvent !== "function") return;
+      window.trackSiteEvent(eventName, parameters);
+    }
+    document.querySelectorAll(".destination-card").forEach(link => {
+      link.addEventListener("click", () => {
+        const network = link.querySelector("strong")?.textContent?.trim().toLowerCase() || "social";
+        trackBlogEvent("social_outbound_click", {
+          social_network: network,
+          link_url: link.href
+        });
+      });
+    });
     if (requestedPost) {
       document.body.classList.add("reading");
       readerContainer.classList.add("is-visible");
@@ -497,6 +510,9 @@
         link.target = "_blank";
         link.rel = "noopener noreferrer";
         link.setAttribute("aria-label", `Compartilhar no ${label}`);
+        link.addEventListener("click", () => trackBlogEvent("blog_share", {
+          method: label.toLowerCase()
+        }));
         link.append(createSocialIcon(label), document.createTextNode(label));
         options.append(link);
       });
@@ -510,6 +526,7 @@
         try {
           await copyText(url);
           feedback.textContent = "Link copiado.";
+          trackBlogEvent("blog_share", { method: "copy_link" });
         } catch (error) {
           feedback.textContent = "Não foi possível copiar o link.";
         }
@@ -531,7 +548,13 @@
       ];
       if (navigator.share) {
         const nativeButton = document.createElement("button"); nativeButton.type = "button"; nativeButton.textContent = "Compartilhar";
-        nativeButton.addEventListener("click", () => navigator.share({ title: post.title, text: invitation, url }).catch(() => {})); options.append(nativeButton);
+        nativeButton.addEventListener("click", () => navigator.share({ title: post.title, text: invitation, url }).then(() => {
+          trackBlogEvent("article_share", {
+            article_slug: postIdentifier(post),
+            article_title: post.title,
+            method: "native"
+          });
+        }).catch(() => {})); options.append(nativeButton);
       }
       destinations.forEach(([label, href]) => {
         const link = document.createElement("a");
@@ -539,12 +562,17 @@
         link.href = href;
         link.target = "_blank";
         link.rel = "noopener noreferrer";
+        link.addEventListener("click", () => trackBlogEvent("article_share", {
+          article_slug: postIdentifier(post),
+          article_title: post.title,
+          method: label.toLowerCase()
+        }));
         link.append(createSocialIcon(label), document.createTextNode(label));
         options.append(link);
       });
       const copy = document.createElement("button"); copy.type = "button"; copy.textContent = "Copiar link";
       const feedback = document.createElement("p"); feedback.className = "share-feedback"; feedback.setAttribute("role", "status");
-      copy.addEventListener("click", async () => { try { await copyText(url); feedback.textContent = "Link copiado."; } catch (error) { feedback.textContent = "Não foi possível copiar o link."; } });
+      copy.addEventListener("click", async () => { try { await copyText(url); feedback.textContent = "Link copiado."; trackBlogEvent("article_share", { article_slug: postIdentifier(post), article_title: post.title, method: "copy_link" }); } catch (error) { feedback.textContent = "Não foi possível copiar o link."; } });
       options.append(copy); section.append(title, options, feedback); return section;
     }
     function sanitizeArticle(value) {
@@ -593,7 +621,7 @@
       const commentLink = document.createElement("a"); commentLink.className = "comment-link"; commentLink.href = `${pageUrl}#comentarios`; commentLink.textContent = "Participar da conversa";
       actions.append(readLink, commentLink); body.append(meta, title, excerpt, actions); if (post.image) article.append(visual); article.append(body); return article;
     }
-    function createCommentItem(comment) {
+    function createCommentItem(comment, postId) {
       const item = document.createElement("article"); item.className = "comment-item";
       if (comment.id) item.id = `comentario-${comment.id}`;
       const author = document.createElement("h3"); author.className = "comment-author"; author.textContent = comment.author_name || "Leitora";
@@ -616,6 +644,10 @@
         link.href = href;
         link.target = "_blank";
         link.rel = "noopener noreferrer";
+        link.addEventListener("click", () => trackBlogEvent("comment_share", {
+          article_slug: postId,
+          method: label.toLowerCase()
+        }));
         link.append(createSocialIcon(label), document.createTextNode(label));
         share.append(link);
       });
@@ -637,6 +669,10 @@
           const data = await response.json().catch(() => ({}));
           if (!response.ok) throw new Error(data.error || "Não foi possível curtir");
           updateLike(Boolean(data.liked), data.likeCount);
+          trackBlogEvent(data.liked ? "comment_liked" : "comment_unliked", {
+            article_slug: postId,
+            like_count: Number(data.likeCount) || 0
+          });
         } catch (error) {
           like.setAttribute("title", error.message || "Não foi possível curtir agora");
         } finally {
@@ -684,7 +720,7 @@
         if (!comments.length) {
           const empty = document.createElement("p"); empty.className = "comment-empty"; empty.textContent = "Seja a primeira pessoa a comentar."; list.append(empty); return;
         }
-        comments.forEach(comment => list.append(createCommentItem(comment)));
+        comments.forEach(comment => list.append(createCommentItem(comment, postId)));
       } catch (error) {
         const unavailable = document.createElement("p"); unavailable.className = "comment-empty"; unavailable.textContent = "Os comentários estarão disponíveis em breve."; list.replaceChildren(unavailable);
       } finally {
@@ -716,10 +752,11 @@
         form.reset();
         if (window.turnstile && form.turnstileWidget !== undefined) window.turnstile.reset(form.turnstileWidget);
         status.textContent = "Comentário publicado.";
+        trackBlogEvent("comment_published", { article_slug: postId });
         if (data.comment) {
           const empty = list.querySelector(".comment-empty");
           if (empty) empty.remove();
-          list.append(createCommentItem(data.comment));
+          list.append(createCommentItem(data.comment, postId));
         } else {
           await loadComments(postId, list);
         }
@@ -771,6 +808,11 @@
       const comments = createCommentsSection(post);
       reader.replaceChildren(back, shell, comments);
       history.replaceState({ article: postIdentifier(post) }, "", articleShareUrl(post));
+      trackBlogEvent("blog_article_open", {
+        article_slug: postIdentifier(post),
+        article_title: post.title,
+        page_location: window.location.href
+      });
     }
     async function loadPosts() {
       postsContainer.setAttribute("aria-busy", "true");
