@@ -6,9 +6,10 @@
   <meta name="description" content="Laila Hage: mulher, mãe, cristã, servidora pública e sobrevivente. Conheça sua história e baixe gratuitamente o livro Lumen.">
   <meta name="theme-color" content="#540b0e">
   <meta name="author" content="Laila Hage">
-  <meta name="robots" content="index, follow">
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
   <title>Laila Hage | Lumen</title>
   <link rel="canonical" href="https://lailahage.com.br/">
+  <link rel="sitemap" type="application/xml" href="https://lailahage.com.br/sitemap.xml">
   <meta property="og:locale" content="pt_BR">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Laila Hage">
@@ -27,6 +28,48 @@
   <meta name="twitter:image" content="https://lailahage.com.br/ogimage.png">
   <meta name="twitter:image:alt" content="Laila Hage, mulher, mãe, cristã e servidora pública">
   <link rel="icon" href="favicon.ico" sizes="any">
+  <script src="/analytics.js"></script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebSite",
+        "@id": "https://lailahage.com.br/#website",
+        "url": "https://lailahage.com.br/",
+        "name": "Laila Hage",
+        "inLanguage": "pt-BR"
+      },
+      {
+        "@type": "Person",
+        "@id": "https://lailahage.com.br/#laila",
+        "name": "Laila Hage",
+        "url": "https://lailahage.com.br/",
+        "image": "https://lailahage.com.br/lailachage.webp",
+        "sameAs": [
+          "https://www.instagram.com/lailachage/",
+          "https://lailahage.substack.com/"
+        ],
+        "jobTitle": "Jurista e servidora pública"
+      },
+      {
+        "@type": "Book",
+        "name": "Lumen",
+        "url": "https://lailahage.com.br/#lumen",
+        "image": "https://lailahage.com.br/lumen.webp",
+        "inLanguage": "pt-BR",
+        "author": { "@id": "https://lailahage.com.br/#laila" }
+      },
+      {
+        "@type": "Book",
+        "name": "Quando a Proteção Fere",
+        "url": "https://lailahage.com.br/#novo-livro",
+        "inLanguage": "pt-BR",
+        "author": { "@id": "https://lailahage.com.br/#laila" }
+      }
+    ]
+  }
+  </script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="preload" as="image" href="lailachage.webp" type="image/webp" fetchpriority="high">
@@ -953,6 +996,18 @@
       link.addEventListener('click', (event) => {
         event.preventDefault();
         const destination = link.href;
+        if (window.trackSiteEvent) {
+          window.trackSiteEvent('file_download', {
+            book_title: 'Lumen',
+            file_name: 'Lumen',
+            file_extension: 'pdf',
+            link_url: destination
+          });
+          window.trackSiteEvent('download_lumen', {
+            book_title: 'Lumen',
+            link_url: destination
+          });
+        }
         clearTimeout(lumenLightTimer);
         clearTimeout(lumenNavigationTimer);
         lumenLight.classList.remove('is-visible');
@@ -1064,7 +1119,7 @@
     let prologueRequiresTurnstile = false;
 
     function normalizePersonName(value) {
-      return value.replace(/[^A-Za-zÀ-ÖØ-öø-ÿ'’\s]/g, '').replace(/\s{2,}/g, ' ').replace(/^\s+/, '');
+      return value.normalize('NFC').replace(/[^\p{L}\p{M}'’\s-]/gu, '').replace(/\s{2,}/g, ' ').replace(/^\s+/, '');
     }
     function validatePersonName() {
       const words = readerName.value.trim().split(/\s+/).filter(Boolean);
@@ -1191,6 +1246,18 @@
         download.download = 'QUANDO A PROTEÇÃO FERE - Prologo.pdf';
         download.hidden = true;
         document.body.append(download);
+        if (window.trackSiteEvent) {
+          window.trackSiteEvent('file_download', {
+            book_title: 'Quando a Proteção Fere',
+            file_name: 'QUANDO A PROTEÇÃO FERE - Prologo.pdf',
+            file_extension: 'pdf',
+            link_url: data.downloadUrl
+          });
+          window.trackSiteEvent('download_prologo', {
+            book_title: 'Quando a Proteção Fere',
+            link_url: data.downloadUrl
+          });
+        }
         download.click();
         download.remove();
         const fallback = document.createElement('a');

@@ -6,9 +6,10 @@
   <meta name="description" content="Artigos e reflexões de Laila Hage sobre direito, proteção, fé e reconstrução.">
   <meta name="theme-color" content="#540b0e">
   <meta name="author" content="Laila Hage">
-  <meta name="robots" content="index, follow">
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
   <title>Blog | Laila Hage</title>
   <link rel="canonical" href="https://lailahage.com.br/blog.html">
+  <link rel="sitemap" type="application/xml" href="https://lailahage.com.br/sitemap.xml">
   <meta property="og:locale" content="pt_BR">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Laila Hage">
@@ -22,6 +23,27 @@
   <meta name="twitter:description" content="Palavras sobre justiça, proteção, fé e reconstrução.">
   <meta name="twitter:image" content="https://lailahage.com.br/ogimage.png">
   <link rel="icon" href="favicon.ico" sizes="any">
+  <script src="/analytics.js"></script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Blog",
+    "@id": "https://lailahage.com.br/blog.html#blog",
+    "url": "https://lailahage.com.br/blog.html",
+    "name": "Blog Laila Hage",
+    "inLanguage": "pt-BR",
+    "author": {
+      "@type": "Person",
+      "@id": "https://lailahage.com.br/#laila",
+      "name": "Laila Hage",
+      "url": "https://lailahage.com.br/",
+      "sameAs": [
+        "https://www.instagram.com/lailachage/",
+        "https://lailahage.substack.com/"
+      ]
+    }
+  }
+  </script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&amp;family=Playfair+Display:ital,wght@0,400;1,400&amp;display=swap" rel="stylesheet">
@@ -247,14 +269,14 @@
   </div>
   <noscript><style>.site-loader{display:none!important}body.is-loading{overflow:auto}</style></noscript>
   <header class="site-header">
-    <a class="brand" href="index.html"><img src="logo.webp" alt="" aria-hidden="true" onerror="this.hidden=true">Laila&nbsp;<span>Hage</span></a>
+    <a class="brand" href="/"><img src="logo.webp" alt="" aria-hidden="true" onerror="this.hidden=true">Laila&nbsp;<span>Hage</span></a>
     <nav class="site-nav" aria-label="Navegação principal">
-      <a href="index.html#historia">História</a>
-      <a href="index.html#lumen">Lumen</a>
-      <a href="index.html#novo-livro">Novo livro</a>
-      <a href="index.html#instituto">Instituto</a>
+      <a href="/#historia">História</a>
+      <a href="/#lumen">Lumen</a>
+      <a href="/#novo-livro">Novo livro</a>
+      <a href="/#instituto">Instituto</a>
     </nav>
-    <a class="back" href="index.html"><span aria-hidden="true">←</span> Voltar</a>
+    <a class="back" href="/"><span aria-hidden="true">←</span> Voltar</a>
   </header>
   <main>
     <section class="masthead">
@@ -344,7 +366,8 @@
       const destination = new URL(link.href, window.location.href);
       const currentBlogPath = window.location.pathname.replace(/\/+$/, "");
       const destinationPath = destination.pathname.replace(/\/+$/, "");
-      if (destination.origin === window.location.origin && destinationPath === currentBlogPath) {
+      const staysInsideBlog = destinationPath === currentBlogPath || destinationPath.endsWith("/blog.html") || destinationPath.includes("/artigo/");
+      if (destination.origin === window.location.origin && staysInsideBlog) {
         try { sessionStorage.setItem("lailaInternalBlogNavigation", "1"); } catch (error) {}
       }
     });
@@ -391,6 +414,48 @@
     }
     function articleShareUrl(post) {
       return `${PUBLIC_SITE_URL}/artigo/${encodeURIComponent(postIdentifier(post))}`;
+    }
+    function updateArticleMetadata(post) {
+      const url = articleShareUrl(post);
+      const description = (post.excerpt || "").replace(/\s+/g, " ").trim().slice(0, 220) || "Leia esta reflexão de Laila Hage.";
+      const image = /^https:\/\//i.test(post.image || "") ? post.image : `${PUBLIC_SITE_URL}/ogimage.png`;
+      const setMeta = (selector, attribute, value) => {
+        const element = document.querySelector(selector);
+        if (element) element.setAttribute(attribute, value);
+      };
+      const canonical = document.querySelector('link[rel="canonical"]');
+      if (canonical) canonical.href = url;
+      setMeta('meta[name="description"]', 'content', description);
+      setMeta('meta[property="og:type"]', 'content', 'article');
+      setMeta('meta[property="og:url"]', 'content', url);
+      setMeta('meta[property="og:title"]', 'content', post.title);
+      setMeta('meta[property="og:description"]', 'content', description);
+      setMeta('meta[property="og:image"]', 'content', image);
+      setMeta('meta[name="twitter:title"]', 'content', post.title);
+      setMeta('meta[name="twitter:description"]', 'content', description);
+      setMeta('meta[name="twitter:image"]', 'content', image);
+
+      let structuredData = document.getElementById('articleStructuredData');
+      if (!structuredData) {
+        structuredData = document.createElement('script');
+        structuredData.type = 'application/ld+json';
+        structuredData.id = 'articleStructuredData';
+        document.head.append(structuredData);
+      }
+      const publishedAt = post.date && !Number.isNaN(Date.parse(post.date)) ? new Date(post.date).toISOString() : undefined;
+      structuredData.textContent = JSON.stringify({
+        '@context': 'https://schema.org',
+        '@type': 'BlogPosting',
+        headline: post.title,
+        description,
+        url,
+        mainEntityOfPage: url,
+        image: [image],
+        ...(publishedAt ? { datePublished: publishedAt, dateModified: publishedAt } : {}),
+        author: { '@type': 'Person', name: 'Laila Hage', url: `${PUBLIC_SITE_URL}/` },
+        publisher: { '@type': 'Person', name: 'Laila Hage', url: `${PUBLIC_SITE_URL}/` },
+        inLanguage: 'pt-BR'
+      });
     }
     async function copyText(value) {
       if (navigator.clipboard && window.isSecureContext) return navigator.clipboard.writeText(value);
@@ -631,9 +696,9 @@
       const form = event.currentTarget;
       const nameField = form.elements.name;
       const messageField = form.elements.message;
-      const cleanName = nameField.value.trim().replace(/\s{2,}/g, " ");
-      const hasValidName = /^[A-Za-zÀ-ÖØ-öø-ÿ'’ ]{2,80}$/.test(cleanName);
-      const hasMeaningfulComment = (messageField.value.match(/[A-Za-zÀ-ÖØ-öø-ÿ]/g) || []).length >= 3;
+      const cleanName = nameField.value.normalize("NFC").trim().replace(/\s{2,}/g, " ");
+      const hasValidName = /^[\p{L}\p{M}'’ -]{2,80}$/u.test(cleanName);
+      const hasMeaningfulComment = (messageField.value.match(/\p{L}/gu) || []).length >= 3;
       nameField.setCustomValidity(hasValidName ? "" : "Digite um nome usando apenas letras.");
       messageField.setCustomValidity(hasMeaningfulComment ? "" : "Escreva um comentário com pelo menos três letras.");
       if (!form.reportValidity()) return;
@@ -675,7 +740,7 @@
       const commentName = form.elements.name;
       const commentMessage = form.elements.message;
       commentName.addEventListener("input", () => {
-        commentName.value = commentName.value.replace(/[^A-Za-zÀ-ÖØ-öø-ÿ'’\s]/g, "").replace(/\s{2,}/g, " ").slice(0, 80);
+        commentName.value = commentName.value.normalize("NFC").replace(/[^\p{L}\p{M}'’\s-]/gu, "").replace(/\s{2,}/g, " ").slice(0, 80);
         commentName.setCustomValidity("");
       });
       commentMessage.addEventListener("input", () => commentMessage.setCustomValidity(""));
@@ -688,6 +753,7 @@
       const reader = readerContainer;
       document.body.classList.add("reading");
       document.title = `${post.title} | Laila Hage`;
+      updateArticleMetadata(post);
       reader.classList.add("is-visible");
       reader.setAttribute("aria-busy", "false");
       const back = document.createElement("a"); back.className = "reader-back"; back.href = blogIndexUrl(); back.innerHTML = '<span aria-hidden="true">←</span> Voltar aos textos';
@@ -704,6 +770,7 @@
       const content = document.createElement("div"); content.className = "article-content"; content.append(sanitizeArticle(post.content)); shell.append(content, createArticleShare(post));
       const comments = createCommentsSection(post);
       reader.replaceChildren(back, shell, comments);
+      history.replaceState({ article: postIdentifier(post) }, "", articleShareUrl(post));
     }
     async function loadPosts() {
       postsContainer.setAttribute("aria-busy", "true");
