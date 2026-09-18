@@ -992,7 +992,7 @@
     const lumenLight = document.getElementById('lumenLight');
     let lumenLightTimer;
     let lumenNavigationTimer;
-    document.querySelectorAll('[data-lumen-download]').forEach((link) => {
+    document.querySelectorAll('[data-lumen-download], a[href*="drive.google.com/file/d/1lQeiBxvui0KhFPAOCDODbP3qjiBXdksk"]').forEach((link) => {
       link.addEventListener('click', (event) => {
         event.preventDefault();
         const destination = link.href;
@@ -1005,7 +1005,8 @@
           });
           window.trackSiteEvent('download_lumen', {
             book_title: 'Lumen',
-            link_url: destination
+            link_url: destination,
+            send_to: 'G-TNC40ZKG7R'
           });
         }
         clearTimeout(lumenLightTimer);
